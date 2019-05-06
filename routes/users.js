@@ -21,7 +21,7 @@ router.post('/registrar', (req, res) => {
   const sexo = req.body.sexo;
   const telefono = req.body.telefono;
   const estadoLaboral = req.body.estadoLaboral;
-  const usuario = req.body.usuario;
+  const username = req.body.username;
   const password = req.body.password;
   const rol = req.body.rolUsuario;
 
@@ -32,7 +32,7 @@ router.post('/registrar', (req, res) => {
   req.checkBody('sexo', 'Campo Sexo es obligatorio').notEmpty();
   req.checkBody('telefono', 'Telefono es obligatorio').notEmpty();
   req.checkBody('estadoLaboral', 'Especificar Estado Laboral').notEmpty();
-  req.checkBody('usuario', 'Usuario es obligatorio').isEmail();
+  req.checkBody('username', 'Usuario es obligatorio').isEmail();
   req.checkBody('password', 'Contraseña es obligatoria').notEmpty();
   req.checkBody('rolUsuario', 'Especificar Rol de Usuario').notEmpty();
 
@@ -50,13 +50,12 @@ router.post('/registrar', (req, res) => {
       sexo: sexo,
       telefono: telefono,
       estadoLaboral: estadoLaboral,
-      usuario: usuario,
+      username: username,
       password: password,
       rol: rol
     })
     bcrypt.genSalt(10, (err,salt) => {
       bcrypt.hash(newUser.password, salt, (err, hash) => {
-        console.log(newUser.password)
         if(err){
           console.log(err)
         }

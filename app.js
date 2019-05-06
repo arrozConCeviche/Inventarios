@@ -205,6 +205,17 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
 })
 
 
+//Capturar Vehiculo
+app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
+  Vehiculo.findById(req.params._id, (err, vehiculo) => {
+    res.render('vehiculo', {
+      vehiculo: vehiculo
+    })
+  })
+})
+
+
+
 app.listen(3000, function(){
   console.log('Server started on port 3000...');
 });

@@ -1,0 +1,6 @@
+extends layout
+block content
+  ul.list-group
+    each modeloVehiculo, i in modeloVehiculos 
+      li.list-group-item
+        a(href="/inventario/vehiculo/"+modeloVehiculo.tipo+"/"+modeloVehiculo.modelo)= modeloVehiculo.modelo

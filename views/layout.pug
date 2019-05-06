@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    title Team Inventarios
+    link(rel='stylesheet' href = '/bower_components/bootstrap/dist/css/bootstrap.css')
+
+  body
+    nav.navbar.navbar-dark-top.bg-dark.flex-md-nowrap.p-0.shadow
+      a.navbar-brand.col-sm-3.col-md-2.mr-0(href='/') Team Inventario
+      input.form-control.form-control-dark.w-100(type='text', placeholder='Search', aria-label='Search')
+      ul.navbar-nav.px-3
+        li.nav-item.text-nowrap
+          a.nav-link(href='#') Sign out
+    .container-fluid
+      .row
+        nav.col-md-2.d-none.d-md-block.bg-light.sidebar
+          .sidebar-sticky
+            ul.nav.flex-column
+              li.nav-item
+                a.nav-link(href='/')
+                  span(data-feather='home')
+                  |               Principal
+                  span.sr-only (current)
+              li.nav-item
+                a.nav-link(href='/vehiculo/agregar')
+                  span(data-feather='shopping-cart')
+                  |               Ingresar Vehiculo
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='users')
+                  |               Ingresar Repuesto
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='bar-chart-2')
+                  |               Reportes
+        main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
+          .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+            h1.h2 #{title}
+            .btn-toolbar.mb-2.mb-md-0
+              .btn-group.mr-2
+                button.btn.btn-sm.btn-outline-secondary(type='button') Share
+                button.btn.btn-sm.btn-outline-secondary(type='button') Export
+              button.btn.btn-sm.btn-outline-secondary.dropdown-toggle(type='button')
+                span(data-feather='calendar')
+                |             This week
+          != messages('message', locals)
+          if errors
+            each error, i in errors
+              div(class="alert alert-danger") #{error.msg}
+          block content
+          br
+
+          hr
+          footer
+          p Copyright &copy; 2019
+    script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+    script(src='/bower_components/jquery/dist/jquery.js')

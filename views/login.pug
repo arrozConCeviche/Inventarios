@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title Team Inventarios
+    link(rel='stylesheet' href = '/bower_components/bootstrap/dist/css/bootstrap.css')
+  body.text-center
+    form(method = 'POST', action = '/')
+      != messages('message', locals)
+      if errors
+        each error, i in errors
+          div(class="alert alert-danger") #{error.msg}
+      .container.mb-6
+        h1.h3.mb-3.font-weight-normal Bienvenido
+        h1.h5.mb-3.lead.text-muted Inciar Sesion
+        br
+        br
+        label.sr-only Email
+        input.form-control(name='usuario', type='email', placeholder='Email address', autofocus='')
+        label.sr-only Password
+        input.form-control(name='password', type='password', placeholder='Password')
+        br
+        input.btn.btn-lg.btn-primary.btn-block(type='submit', value='Entrar')
+        
+        br
+        hr
+        footer
+        p.mt-5.mb-3.text-muted Copyright &copy; 2019
+        
+
+
+    
+  script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+  script(src='/bower_components/jquery/dist/jquery.js')

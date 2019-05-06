@@ -1,0 +1,47 @@
+extends layout
+block content
+  form(method = 'POST', action = '/users/registrar')
+    .container
+      .col-md-12.order-md-1
+        .row
+          .col-md-8.mb-3
+            label Nombre
+            input.form-control(name='nombre', type='text', placeholder='Nombre del Usuario')
+          .col-md-4.mb-3
+            label DNI
+            input.form-control(name='dni', type='text', placeholder='DNI del Usuario')
+        .row
+          .col-md-8.mb-3
+            label Direccion
+            input.form-control(name='direccion', type='text', placeholder='Direccion Actual')
+          .col-md-4.mb-3
+            label Telefono
+            input.form-control(name='telefono', type='text', placeholder='Telefono')
+        .row
+          .col-md-8.mb-3
+            label Usuario
+            input.form-control(name='usuario', type='text', placeholder='Correo Organizacional')
+          .col-md-4.mb-3
+            label Sexo
+            select.custom-select.d-block.w-100(name='sexo')
+              option(value='') Elegir
+              option Masculino
+              option Femenino
+        .row
+          .col-md-8.mb-3
+            label Contraseña
+            input.form-control(name='password', type='password', placeholder='Contraseña')
+          .col-md-4.mb-3
+            label Estado Laboral
+            select.custom-select.d-block.w-100(name='estadoLaboral')
+              option(value='') Elegir
+              option Activo
+              option Inactivo            
+        .row
+          .col-md-3.mb-3
+            label Rol de Usuario
+            select.custom-select.d-block.w-100(name='rolUsuario')
+              option(value='') Elegir
+              option Supervisor
+              option Vendedor
+      input.btn.btn-lg.btn-primary.btn-block(type='submit', value='Agregar')

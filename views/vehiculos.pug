@@ -1,6 +1,36 @@
 extends layout
 block content
+  
+  .row.mb-2
+  .col-md-8
+    .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
+      .col.p-4.d-flex.flex-column.position-static
+        h4 Caracteristicas:
+        h6.text-muted= `Tipo: ${modelo.tipo}`
+        h7.text-muted= `País Origen:  ${modelo.paisOrigen}`
+        h7.text-muted= `Precio Venta: S/ ${modelo.pVenta}`
+        h7.text-muted= `Neumático de Repuesto:  ${modelo.neumaticoRepuesto}`
+        h7.text-muted= `Seguridad:  ${modelo.seguridad}`
+        h7.text-muted= `Sunroof:  ${modelo.sunroof}`
+      .col-auto.d-none.d-lg-block
+        img(src='/4Runner.jpg', width='420', height='300')
   ul.list-group
     each vehiculo, i in vehiculos 
-      li.list-group-item
-        a(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
+      li.list-group-item  
+        .col-md-4
+          a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
+          h1.themed-grid-col asd
+
+  .table-responsive
+    table.table.table-striped.table-sm
+      thead
+        tr
+          th ID Vehiculo
+          th Color
+          th Almacen
+      tbody
+        each vehiculo, i in vehiculos
+          td 
+            a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
+          td= vehiculo.color
+          td= vehiculo.almacen

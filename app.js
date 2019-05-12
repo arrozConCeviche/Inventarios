@@ -191,6 +191,7 @@ app.get('/inventario/vehiculo/:tipo', (req, res) => {
 //Capturar modelo
 app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+    console.log(modelo)
     Vehiculo
     .find({modelo: modelo._id})
     .populate('modelo')
@@ -198,7 +199,9 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
       //res.json(vehiculos)
       //console.log('The stories JSON is an array: ', vehiculos)
       res.render('vehiculos',{
-        vehiculos: vehiculos
+        vehiculos: vehiculos,
+        modelo: modelo,
+        title: modelo.modelo
       })
     })
   })
@@ -209,7 +212,8 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
 app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
   Vehiculo.findById(req.params._id, (err, vehiculo) => {
     res.render('vehiculo', {
-      vehiculo: vehiculo
+      vehiculo: vehiculo,
+      title: 'Vehiculo:  ' + vehiculo.id
     })
   })
 })

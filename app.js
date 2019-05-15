@@ -89,6 +89,8 @@ app.set('view engine','pug');
 let ModeloVehiculo = require('./models/modeloVehiculo')
 let Vehiculo = require('./models/vehiculo')
 let ModeloRepuesto = require('./models/modeloRepuesto')
+let Venta = require('./models/venta')
+
 
 //Inicio
 app.get('/', (req, res) => {
@@ -238,6 +240,12 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 })
 
 
+//Registro de Salida
+app.get('/registroSalida/', (req, res) => {
+  res.render('registroSalida', {
+    title: 'Registro de Salida de Producto'
+  })
+})
 
 app.listen(3000, function(){
   console.log('Server started on port 3000...');

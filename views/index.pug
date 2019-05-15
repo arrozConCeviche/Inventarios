@@ -1,6 +1,7 @@
 extends layout
 block content
   .text-center
-    img(href="/inventario/vehiculo", src='/img/vehiculo1.png')
-    
-    img(href="/inventario/repuesto", src='/img/repuestos1.png')
+    a(href="/inventario/vehiculo")
+      img(src='/img/vehiculo1.png')
+    a(href="/inventario/repuesto")
+      img(src='/img/repuestos1.png', width='250', height='200')

@@ -13,14 +13,8 @@ block content
         h7.text-muted= `Seguridad:  ${modelo.seguridad}`
         h7.text-muted= `Sunroof:  ${modelo.sunroof}`
       .col-auto.d-none.d-lg-block
-        img(src='/4Runner.jpg', width='420', height='300')
-  ul.list-group
-    each vehiculo, i in vehiculos 
-      li.list-group-item  
-        .col-md-4
-          a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
-          h1.themed-grid-col asd
-
+        img(src='/img/4Runner.jpg', width='420', height='300')
+  h4.h4= `Stock: ${stock}`
   .table-responsive
     table.table.table-striped.table-sm
       thead

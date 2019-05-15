@@ -94,6 +94,8 @@ let ModeloRepuesto = require('./models/modeloRepuesto')
 app.get('/', (req, res) => {
   res.render('login')
 })
+
+//Inicio que crea un elemento
 /*app.get('/', (req, res) => {
   res.render('login')
   const modeloVehiculo = new ModeloVehiculo({
@@ -109,7 +111,7 @@ app.get('/', (req, res) => {
   modeloVehiculo.save();
   const vehiculo = new Vehiculo({
     _id: new mongoose.Types.ObjectId,
-    color: "rojo",
+    color: "Rojo",
     almacen: "Lima",
     piso: 3,
     fila: 2,
@@ -198,11 +200,22 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
     .exec((err, vehiculos) => {
       //res.json(vehiculos)
       //console.log('The stories JSON is an array: ', vehiculos)
+      function objLength(obj){
+        var i=0;
+        for (var x in obj){
+          if(obj.hasOwnProperty(x)){
+            i++;
+          }
+        }
+        return i;
+      }
       res.render('vehiculos',{
         vehiculos: vehiculos,
+        stock: objLength(vehiculos),
         modelo: modelo,
         title: modelo.modelo
       })
+      console.log(objLength(vehiculos))
     })
   })
 })
@@ -210,10 +223,16 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
 
 //Capturar Vehiculo
 app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
-  Vehiculo.findById(req.params._id, (err, vehiculo) => {
-    res.render('vehiculo', {
-      vehiculo: vehiculo,
-      title: 'Vehiculo:  ' + vehiculo.id
+  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+    Vehiculo
+    .findById(req.params._id)
+    .populate('modelo')
+    .exec((err, vehiculo) => {
+    /*Vehiculo.findById(req.params._id, (err, vehiculo) => {*/
+      res.render('vehiculo', {
+        vehiculo: vehiculo,
+        title: 'Vehiculo:  ' + vehiculo.id
+      })
     })
   })
 })

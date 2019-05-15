@@ -1,3 +1,20 @@
 extends layout
 block content
-  h1.h2= vehiculo.modelo
+  .row.mb-2
+    .col-md-4
+      .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
+        .col.p-4.d-flex.flex-column.position-static
+          h5 Caracteristicas:
+          h6.text-muted= `Modelo:  ${vehiculo.modelo.modelo}`
+          h7.text-muted= `Pais Origen:  ${vehiculo.fila}`
+          h7.text-muted= `Color:  ${vehiculo.color}`
+          h7.text-muted= `Fecha Entrada:  ${vehiculo.fechaEntrada}`
+
+    .col-md-4
+      .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
+        .col.p-4.d-flex.flex-column.position-static
+          h5 Ubicacion:
+          h6.text-muted= `Almacen: ${vehiculo.almacen}`
+          h7.text-muted= `Piso: # ${vehiculo.piso}`
+          h7.text-muted= `Fila: # ${vehiculo.fila}`
+          h7.text-muted= `Columna: # ${vehiculo.columna}`

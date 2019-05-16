@@ -97,7 +97,7 @@ app.get('/', (req, res) => {
   res.render('login')
 })
 
-//Inicio que crea un elemento
+//Crear Elementos para Testear
 /*app.get('/', (req, res) => {
   res.render('login')
   const modeloVehiculo = new ModeloVehiculo({
@@ -284,13 +284,16 @@ app.get('/registroSalida/nuevo', (req, res) => {
     })
   })
 })
-  /*Vehiculo.findOne({_id: ObjectId("5cd069b5811753a2b07f5129")}, (err, vehiculo) => {
-    console.log(vehiculo)
-    Venta.findOne({_id: ObjectId("5cdc5b0106110037bb995cab")}, (err, venta) => {
-      venta.cuerpoSalida.push(vehiculo)
-      venta.save()
-    })
-  })*/
+
+
+//Guardar Registro
+app.post('/registroSalida/nuevo', (req, res) => {
+  let vendidos = req.body.vendidos
+  res.send(vendidos);
+  Vehiculo.find({_id : {$in: mongoose.Types.ObjectId(vendidos)}}, (err, vehiculos) => {
+    res.send(vehiculos)
+  })
+})
 
 
 app.listen(3000, function(){

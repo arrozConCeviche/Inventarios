@@ -1,32 +1,28 @@
 extends layout
 block content
-  .row
-    .col-9
-      h1.h3= `Registro # ${id}`
-    .col-3
-      button.btn.btn-outline-primary Guardar Salida de Producto
-  br
-  
-  .row
-    .col-12
-      .table-responsive
-        table.table.table-striped.table-sm
-          thead
-            tr
-              th Modelo
-              th Producto Id
-              th Color
-              th Almacen
-              th Seleccionar
-          each modelo, i in modelos
-            each vehiculo, i in vehiculos 
-              if modelo._id = vehiculo.modelo
-                tbody
-                    td= modelo.modelo
-                    td= vehiculo._id
-                    td= vehiculo.color
-                    td= vehiculo.almacen
-                    td
-                      .form-check
-                        input#seleccionarChk.form-check-input(type='checkbox', value=vehiculo._id)
-                        #{console.log(vehiculo._id)}
+    .row
+      .col-9
+        h1.h3= `Registro # ${id}`
+      .col-3
+        button.btn.btn-outline-primary(name='button') Guardar Salida de Producto
+    br  
+    .row
+      .col-12
+        .table-responsive
+          table.table.table-striped.table-sm
+            thead
+              tr
+                th Modelo
+                th Color
+                th Almacen
+                th Seleccionar
+            each modelo, i in modelos
+              each vehiculo, i in vehiculos 
+                if modelo._id = vehiculo.modelo
+                  tbody
+                      td= modelo.modelo
+                      td= vehiculo.color
+                      td= vehiculo.almacen
+                      td
+                        .form-check
+                          input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)

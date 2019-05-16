@@ -26,8 +26,7 @@ let vehiculoSchema = mongoose.Schema({
     required: true
   },
   modelo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ModeloVehiculo'
+    type: Array
   }
 });
 

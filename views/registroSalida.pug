@@ -10,11 +10,4 @@ block content
           th Precio
           th Fecha
           th Total
-      tbody
-        each venta, i in ventas
-          td 
-            a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
-          td= vehiculo.color
-          td= vehiculo.almacen
-          td 
-            a(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id) Editar
+    

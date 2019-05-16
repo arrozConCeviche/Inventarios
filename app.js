@@ -9,7 +9,7 @@ const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
 
-mongoose.connect(config.database);
+mongoose.connect(config.database, { useNewUrlParser: true });
 let db = mongoose.connection;
 
 //Revisar Conexion
@@ -109,6 +109,20 @@ app.get('/', (req, res) => {
     neumaticoRepuesto: "Si",
     seguridad: 5,
     sunroof: "Si"
+  });
+  modeloVehiculo.save();
+  const vehiculo = new Vehiculo({
+    _id: new mongoose.Types.ObjectId,
+    color: "Rojo",
+    almacen: "Lima",
+    piso: 3,
+    fila: 2,
+    columna: 1,
+    fechaEntrada: Date.now(),
+    modelo: modeloVehiculo._id
+  });
+  vehiculo.save((err) => {
+    console.log(err)
   });
   modeloVehiculo.save();
   const vehiculo = new Vehiculo({
@@ -242,10 +256,42 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 
 //Registro de Salida
 app.get('/registroSalida/', (req, res) => {
+  Vehiculo.findOne({_id: ObjectId("5cd069b5811753a2b07f5129")}, (err, vehiculo) => {
+    console.log(vehiculo)
+    Venta.findOne({_id: ObjectId("5cdc5b0106110037bb995cab")}, (err, venta) => {
+      venta.cuerpoSalida.push(vehiculo)
+      venta.save()
+    })
+  })
   res.render('registroSalida', {
     title: 'Registro de Salida de Producto'
   })
 })
+
+
+//Nuevo Registro
+app.get('/registroSalida/nuevo', (req, res) => {
+  Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
+    ModeloVehiculo.find({}, (err, modelos) => {
+      Vehiculo.find({}, (err, vehiculos) => {
+        res.render('nuevaSalida', {
+          title: 'Nuevo Registro de Salida de Producto',
+          id: venta.idRegistro + 1,
+          modelos: modelos,
+          vehiculos: vehiculos
+        })
+      })
+    })
+  })
+})
+  /*Vehiculo.findOne({_id: ObjectId("5cd069b5811753a2b07f5129")}, (err, vehiculo) => {
+    console.log(vehiculo)
+    Venta.findOne({_id: ObjectId("5cdc5b0106110037bb995cab")}, (err, venta) => {
+      venta.cuerpoSalida.push(vehiculo)
+      venta.save()
+    })
+  })*/
+
 
 app.listen(3000, function(){
   console.log('Server started on port 3000...');

@@ -2,14 +2,11 @@ let mongoose = require('mongoose');
 
 let vehiculoSchema = mongoose.Schema({
   idRegistro: {
-    type: number,
+    type: Number,
     required: true
   },
   cuerpoSalida: {
-
-  },
-  total: {
-
+    type: Array
   }
 })
 

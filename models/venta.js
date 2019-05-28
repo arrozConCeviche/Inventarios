@@ -7,6 +7,9 @@ let vehiculoSchema = mongoose.Schema({
   },
   cuerpoSalida: {
     type: Array
+  },
+  fSalida: {
+    type: Date
   }
 })
 

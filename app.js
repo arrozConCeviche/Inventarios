@@ -256,15 +256,11 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 
 //Registro de Salida
 app.get('/registroSalida/', (req, res) => {
-  Vehiculo.findOne({_id: ObjectId("5cd069b5811753a2b07f5129")}, (err, vehiculo) => {
-    console.log(vehiculo)
-    Venta.findOne({_id: ObjectId("5cdc5b0106110037bb995cab")}, (err, venta) => {
-      venta.cuerpoSalida.push(vehiculo)
-      venta.save()
+  Venta.find({}, (err, ventas) => {
+    res.render('registroSalida', {
+      title: 'Registro de Salida de Producto',
+      ventas: ventas
     })
-  })
-  res.render('registroSalida', {
-    title: 'Registro de Salida de Producto'
   })
 })
 
@@ -289,9 +285,40 @@ app.get('/registroSalida/nuevo', (req, res) => {
 //Guardar Registro
 app.post('/registroSalida/nuevo', (req, res) => {
   let vendidos = req.body.vendidos
-  res.send(vendidos);
-  Vehiculo.find({_id : {$in: mongoose.Types.ObjectId(vendidos)}}, (err, vehiculos) => {
-    res.send(vehiculos)
+  let total = 0
+  let salidasProductos = []
+  let salidaPrecios = []
+  let descrip = []
+  ModeloVehiculo.find({}, (err, modeloVehiculos) => {
+    //console.log(modeloVehiculos)
+    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}})
+    .populate('modelo')
+    .exec((err, vehiculos) => {
+      for(var i in modeloVehiculos){
+        for(var j in vehiculos){
+          if(vehiculos[j].modelo = modeloVehiculos[i]._id){
+            total = modeloVehiculos[i].pVenta
+          }
+        }
+      }
+      salidasProductos.push(modeloVehiculos[i].modelo)
+      salidaPrecios.push(total)
+      for(var i=0;i<salidasProductos.length;i++){
+         descrip.push({producto:salidasProductos[i],precio:salidaPrecios[i]});//add object literal
+      }
+      console.log(descrip)
+      console.log(salidasProductos)
+      console.log(salidaPrecios)
+      Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
+        let venta = new Venta({
+          idRegistro: ultimaVenta.idRegistro+1,
+          cuerpoSalida: descrip,
+          fSalida: Date.now()
+        })
+        venta.save()
+        res.redirect('/registroSalida/')
+      })
+    })
   })
 })
 

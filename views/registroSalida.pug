@@ -1,13 +1,29 @@
 extends layout
 block content
-  .table-responsive
-    table.table.table-striped.table-sm
-      thead
-        tr
-          th ID
-          th Nombre Producto
-          th Cantidad
-          th Precio
-          th Fecha
-          th Total
-    
+  .row
+    .col-9
+    .col-3
+      a.button.btn.btn-outline-primary(href='/registroSalida/nuevo') Nueva Salida de Producto
+  br
+  .row
+    .table-responsive
+      table.table.table-striped.table-sm
+        thead
+          tr
+            th ID
+            th Nombre Producto
+            th Cantidad
+            th Precio
+            th Fecha
+            th Total
+        each venta, i in ventas
+          each vehiculo, i in vehiculos  ---Nested de ventas para llenar el cuadro
+            if modelo._id = vehiculo.modelo
+              tbody
+                  td= modelo.modelo
+                  td= vehiculo.color
+                  td= vehiculo.almacen
+                  td
+                    .form-check
+                      input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
+        

@@ -17,13 +17,11 @@ block content
             th Fecha
             th Total
         each venta, i in ventas
-          each vehiculo, i in vehiculos  ---Nested de ventas para llenar el cuadro
-            if modelo._id = vehiculo.modelo
-              tbody
-                  td= modelo.modelo
-                  td= vehiculo.color
-                  td= vehiculo.almacen
-                  td
-                    .form-check
-                      input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
-        
+          each producto, i in venta.cuerpoSalida
+            tbody
+              td= venta.idRegistro
+              td= producto.producto
+              td= producto.cantidad
+              td= asdfasd
+              td= asd
+              td= producto.precio

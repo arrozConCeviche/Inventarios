@@ -268,6 +268,7 @@ app.get('/registroSalida/', (req, res) => {
 //Nuevo Registro
 app.get('/registroSalida/nuevo', (req, res) => {
   Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
+    console.log(venta)
     ModeloVehiculo.find({}, (err, modelos) => {
       Vehiculo.find({}, (err, vehiculos) => {
         res.render('nuevaSalida', {
@@ -286,29 +287,47 @@ app.get('/registroSalida/nuevo', (req, res) => {
 app.post('/registroSalida/nuevo', (req, res) => {
   let vendidos = req.body.vendidos
   let total = 0
+  let modelos = []
   let salidasProductos = []
   let salidaPrecios = []
   let descrip = []
   ModeloVehiculo.find({}, (err, modeloVehiculos) => {
-    //console.log(modeloVehiculos)
-    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}})
-    .populate('modelo')
-    .exec((err, vehiculos) => {
-      for(var i in modeloVehiculos){
-        for(var j in vehiculos){
-          if(vehiculos[j].modelo = modeloVehiculos[i]._id){
-            total = modeloVehiculos[i].pVenta
+    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
+      for(var i in vehiculos){
+        for(var j in modeloVehiculos){
+          if(vehiculos[i].modelo = modeloVehiculos[j]._id){
+            vehiculos[i].modelo.remove()
+            vehiculos[i].modelo.push(mongoose.Types.Array(modeloVehiculos[j]))
           }
         }
       }
+      console.log(vehiculos)
+    })
+  })
+  /*ModeloVehiculo.find({}, (err, modeloVehiculos) => {
+    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}})
+    .populate('modelo')
+    .exec((err, vehiculos) => {
+      if(err){
+        console.log(err)
+      }
+      for(var i in modeloVehiculos){
+        for(var j in vehiculos){
+          if(vehiculos[j].modelo = modeloVehiculos[i]._id){
+            total =total+modeloVehiculos[i].pVenta
+          }
+        }
+        salidaPrecios.push(total)
+        total=0
+      }
+      console.log(vehiculos)
       salidasProductos.push(modeloVehiculos[i].modelo)
-      salidaPrecios.push(total)
       for(var i=0;i<salidasProductos.length;i++){
          descrip.push({producto:salidasProductos[i],precio:salidaPrecios[i]});//add object literal
       }
-      console.log(descrip)
-      console.log(salidasProductos)
-      console.log(salidaPrecios)
+      //console.log(descrip)
+      //console.log(salidasProductos)
+      //console.log(salidaPrecios)
       Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
         let venta = new Venta({
           idRegistro: ultimaVenta.idRegistro+1,
@@ -319,7 +338,7 @@ app.post('/registroSalida/nuevo', (req, res) => {
         res.redirect('/registroSalida/')
       })
     })
-  })
+  })*/
 })
 
 

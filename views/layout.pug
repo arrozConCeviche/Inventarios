@@ -6,11 +6,11 @@ html
 
   body
     nav.sidebar.navbar.navbar-dark-top.bg-dark.flex-md-nowrap.p-0.shadow
-      a.navbar-brand.col-sm-3.col-md-2.mr-0(href='/') Team Inventario
+      img(src='/img/logo.PNG', width='256', height='150')
       input.form-control.form-control-dark.w-100(type='text', placeholder='Search', aria-label='Search')
       ul.navbar-nav.px-3
         li.nav-item.text-nowrap
-          a.nav-link(href='#') Sign out
+          a.nav-link(href='#') Cerrar Sesión
     .container-fluid
       .row
         nav.col-md-2.d-none.d-md-block.bg-light.sidebar
@@ -33,10 +33,10 @@ html
                 a.nav-link(href='#')
                   span(data-feather='users')
                   |               Registro de Entrada
-            li.nav-item
-              a.nav-link(href='/registroSalida')
-                span(data-feather='bar-chart-2')
-                |               Registro de Salida
+              li.nav-item
+                a.nav-link(href='/registroSalida')
+                  span(data-feather='bar-chart-2')
+                  |               Registro de Salida
               li.nav-item
                 a.nav-link(href='#')
                   span(data-feather='bar-chart-2')

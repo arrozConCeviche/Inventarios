@@ -17,11 +17,20 @@ block content
             th Fecha
             th Total
         each venta, i in ventas
-          each producto, i in venta.cuerpoSalida
-            tbody
-              td= venta.idRegistro
-              td= producto.producto
-              td= producto.cantidad
-              td= asdfasd
-              td= asd
-              td= producto.precio
+          each modelo, i in modelos
+            - var cant = 0
+            - var pTotal = 0
+            if venta.cuerpoSalida[0][0].modelo[0].nombre == modelo.modelo
+              - cant = cant + 1
+              - pTotal = pTotal + modelo.pVenta
+            if cant>0
+              tbody
+                td= venta.idRegistro
+                td= venta.cuerpoSalida[0][0].modelo[0].nombre
+                td= cant
+                td= venta.cuerpoSalida[0][0].modelo[0].pVenta
+                td= venta.fSalida
+                td= pTotal
+          each producto in venta.cuerpoSalida
+            each item in producto
+              p #{item.color}

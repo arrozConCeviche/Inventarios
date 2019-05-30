@@ -16,13 +16,11 @@ block content
                 th Color
                 th Almacen
                 th Seleccionar
-            each modelo, i in modelos
-              each vehiculo, i in vehiculos 
-                if modelo._id = vehiculo.modelo
-                  tbody
-                      td= modelo.modelo
-                      td= vehiculo.color
-                      td= vehiculo.almacen
-                      td
-                        .form-check
-                          input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
+            each vehiculo, i in vehiculos 
+              tbody
+                td= vehiculo.modelo[0].nombre
+                td= vehiculo.color
+                td= vehiculo.almacen
+                td
+                  .form-check
+                    input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)

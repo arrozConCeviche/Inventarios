@@ -26,7 +26,7 @@ block content
       tbody
         each vehiculo, i in vehiculos
           td 
-            a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id)= vehiculo._id
+            a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.nombre+"/"+vehiculo._id)= vehiculo._id
           td= vehiculo.color
           td= vehiculo.almacen
           td 

@@ -105,7 +105,7 @@ app.get('/', (req, res) => {
     tipo: "Camioneta",
     modelo: "4Runner",
     paisOrigen: "Japon",
-    pVenta: 55190,
+    pVenta: 53190,
     neumaticoRepuesto: "Si",
     seguridad: 5,
     sunroof: "Si"
@@ -119,26 +119,17 @@ app.get('/', (req, res) => {
     fila: 2,
     columna: 1,
     fechaEntrada: Date.now(),
-    modelo: modeloVehiculo._id
   });
-  vehiculo.save((err) => {
-    console.log(err)
-  });
-  modeloVehiculo.save();
-  const vehiculo = new Vehiculo({
-    _id: new mongoose.Types.ObjectId,
-    color: "Rojo",
-    almacen: "Lima",
-    piso: 3,
-    fila: 2,
-    columna: 1,
-    fechaEntrada: Date.now(),
-    modelo: modeloVehiculo._id
-  });
-  vehiculo.save((err) => {
-    console.log(err)
-  });
+  vehiculo.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
+  vehiculo.save();
 })*/
+  /*Vehiculo.find({modelo: modeloVehiculo._id}).populate('modelo').exec((err, aaa) => {
+    console.log(aaa)
+  })*/
+  /*Vehiculo.find({modelo: mongoose.Types.ObjectId(modeloVehiculo._id)}, (err, test) => {
+    console.log(mongoose.Types.Array(vehiculo.modelo))
+    console.log(modeloVehiculo._id)
+  })*/
 
 app.post('/', (req, res, next) => {
   passport.authenticate('local', {
@@ -206,7 +197,7 @@ app.get('/inventario/vehiculo/:tipo', (req, res) => {
 })
 
 
-//Capturar modelo
+//Capturar modelo  --Reparar Modelos!!!
 app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
     console.log(modelo)
@@ -257,9 +248,12 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 //Registro de Salida
 app.get('/registroSalida/', (req, res) => {
   Venta.find({}, (err, ventas) => {
-    res.render('registroSalida', {
-      title: 'Registro de Salida de Producto',
-      ventas: ventas
+    ModeloVehiculo.find({}, (err, modelos) => {
+      res.render('registroSalida', {
+        title: 'Registro de Salida de Producto',
+        ventas: ventas,
+        modelos: modelos
+      })
     })
   })
 })
@@ -268,17 +262,30 @@ app.get('/registroSalida/', (req, res) => {
 //Nuevo Registro
 app.get('/registroSalida/nuevo', (req, res) => {
   Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
-    console.log(venta)
-    ModeloVehiculo.find({}, (err, modelos) => {
-      Vehiculo.find({}, (err, vehiculos) => {
-        res.render('nuevaSalida', {
-          title: 'Nuevo Registro de Salida de Producto',
-          id: venta.idRegistro + 1,
-          modelos: modelos,
-          vehiculos: vehiculos
+    if(venta != null){
+      console.log(venta)
+      ModeloVehiculo.find({}, (err, modelos) => {
+        Vehiculo.find({}, (err, vehiculos) => {
+          res.render('nuevaSalida', {
+            title: 'Nuevo Registro de Salida de Producto',
+            id: venta.idRegistro + 1,
+            modelos: modelos,
+            vehiculos: vehiculos
+          })
         })
       })
-    })
+    }else{
+      ModeloVehiculo.find({}, (err, modelos) => {
+        Vehiculo.find({}, (err, vehiculos) => {
+          res.render('nuevaSalida', {
+            title: 'Nuevo Registro de Salida de Producto',
+            id: 1,
+            modelos: modelos,
+            vehiculos: vehiculos
+          })
+        })
+      })
+    }
   })
 })
 
@@ -286,24 +293,48 @@ app.get('/registroSalida/nuevo', (req, res) => {
 //Guardar Registro
 app.post('/registroSalida/nuevo', (req, res) => {
   let vendidos = req.body.vendidos
-  let total = 0
-  let modelos = []
-  let salidasProductos = []
-  let salidaPrecios = []
   let descrip = []
-  ModeloVehiculo.find({}, (err, modeloVehiculos) => {
-    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
-      for(var i in vehiculos){
-        for(var j in modeloVehiculos){
-          if(vehiculos[i].modelo = modeloVehiculos[j]._id){
-            vehiculos[i].modelo.remove()
-            vehiculos[i].modelo.push(mongoose.Types.Array(modeloVehiculos[j]))
-          }
-        }
+  Vehiculo.find({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vVendidos) => {
+    descrip.push(vVendidos)
+    Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
+      if(ultimaVenta != null){
+        let venta = new Venta({
+          idRegistro: ultimaVenta.idRegistro+1,
+          cuerpoSalida: descrip,
+          fSalida: Date.now()
+        })
+        venta.save()
       }
-      console.log(vehiculos)
+      else{
+        let venta = new Venta({
+          idRegistro: 1,
+          cuerpoSalida: descrip,
+          fSalida: Date.now()
+        })
+        venta.save()
+      }
     })
   })
+  res.redirect('/registroSalida/')
+})
+  /*ModeloVehiculo.find({}, (err, modeloVehiculos) => {
+    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
+      for(var i in modeloVehiculos){
+        for(var j in vehiculos){
+          console.log(vehiculos[j].modelo)
+          if(vehiculos[j].modelo == modeloVehiculos[i]._id){
+            vehiculos[j].modelo=[]
+            vehiculos[j].modelo.push({idModelo: modeloVehiculos[i]._id, modelo: modeloVehiculos[i].modelo,
+              pVenta: modeloVehiculos[i].pVenta})
+            descrip.push(vehiculos[j])
+          }
+          console.log(descrip)
+          //console.log(vehiculos[j])
+        }
+      }
+      //console.log(vehiculos)
+    })
+  })*/
   /*ModeloVehiculo.find({}, (err, modeloVehiculos) => {
     Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}})
     .populate('modelo')
@@ -339,7 +370,6 @@ app.post('/registroSalida/nuevo', (req, res) => {
       })
     })
   })*/
-})
 
 
 app.listen(3000, function(){

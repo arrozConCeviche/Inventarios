@@ -20,17 +20,16 @@ block content
           each modelo, i in modelos
             - var cant = 0
             - var pTotal = 0
-            if venta.cuerpoSalida[0][0].modelo[0].nombre == modelo.modelo
-              - cant = cant + 1
-              - pTotal = pTotal + modelo.pVenta
+            each producto in venta.cuerpoSalida
+              each item in producto
+                if item.modelo[0].nombre == modelo.modelo
+                  - cant = cant + 1
+                  - pTotal = pTotal + modelo.pVenta
             if cant>0
               tbody
                 td= venta.idRegistro
-                td= venta.cuerpoSalida[0][0].modelo[0].nombre
+                td= modelo.modelo
                 td= cant
-                td= venta.cuerpoSalida[0][0].modelo[0].pVenta
+                td= modelo.pVenta
                 td= venta.fSalida
                 td= pTotal
-          each producto in venta.cuerpoSalida
-            each item in producto
-              p #{item.color}

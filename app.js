@@ -75,6 +75,7 @@ app.use(expressValidator({
 //Passport config
 require('./config/passport')(passport);
 
+
 //Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
@@ -170,13 +171,17 @@ app.get('/inventario', (req, res) => {
 //Capturar vehiculos
 app.get('/inventario/vehiculo/', (req,res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
-    console.log(modelos)
     if(err){
       console.log(err)
     }else{
+      let modeloArray = new Array
+      for(var x in modelos){
+        modeloArray.push(modelos[x].tipo)
+      }
+      let distinctModelo = [...new Set(modeloArray)]
       res.render('tipo', {
         title: 'Control de Inventario',
-        modelos: modelos
+        tipos: distinctModelo
       })
     }
   })
@@ -197,16 +202,10 @@ app.get('/inventario/vehiculo/:tipo', (req, res) => {
 })
 
 
-//Capturar modelo  --Reparar Modelos!!!
+//Capturar modelo
 app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
-    console.log(modelo)
-    Vehiculo
-    .find({modelo: modelo._id})
-    .populate('modelo')
-    .exec((err, vehiculos) => {
-      //res.json(vehiculos)
-      //console.log('The stories JSON is an array: ', vehiculos)
+    Vehiculo.find({modelo: {$elemMatch: {nombre: modelo.modelo}}}, (err, vehiculos) =>{
       function objLength(obj){
         var i=0;
         for (var x in obj){
@@ -222,7 +221,6 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
         modelo: modelo,
         title: modelo.modelo
       })
-      console.log(objLength(vehiculos))
     })
   })
 })
@@ -231,11 +229,7 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
 //Capturar Vehiculo
 app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
-    Vehiculo
-    .findById(req.params._id)
-    .populate('modelo')
-    .exec((err, vehiculo) => {
-    /*Vehiculo.findById(req.params._id, (err, vehiculo) => {*/
+    Vehiculo.findById(req.params._id, (err, vehiculo) => {
       res.render('vehiculo', {
         vehiculo: vehiculo,
         title: 'Vehiculo:  ' + vehiculo.id
@@ -315,62 +309,11 @@ app.post('/registroSalida/nuevo', (req, res) => {
       }
     })
   })
+  Vehiculo.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
+    console.log(vehiculos)
+  })
   res.redirect('/registroSalida/')
 })
-  /*ModeloVehiculo.find({}, (err, modeloVehiculos) => {
-    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
-      for(var i in modeloVehiculos){
-        for(var j in vehiculos){
-          console.log(vehiculos[j].modelo)
-          if(vehiculos[j].modelo == modeloVehiculos[i]._id){
-            vehiculos[j].modelo=[]
-            vehiculos[j].modelo.push({idModelo: modeloVehiculos[i]._id, modelo: modeloVehiculos[i].modelo,
-              pVenta: modeloVehiculos[i].pVenta})
-            descrip.push(vehiculos[j])
-          }
-          console.log(descrip)
-          //console.log(vehiculos[j])
-        }
-      }
-      //console.log(vehiculos)
-    })
-  })*/
-  /*ModeloVehiculo.find({}, (err, modeloVehiculos) => {
-    Vehiculo.find({_id : {$in: mongoose.Types.Array(vendidos)}})
-    .populate('modelo')
-    .exec((err, vehiculos) => {
-      if(err){
-        console.log(err)
-      }
-      for(var i in modeloVehiculos){
-        for(var j in vehiculos){
-          if(vehiculos[j].modelo = modeloVehiculos[i]._id){
-            total =total+modeloVehiculos[i].pVenta
-          }
-        }
-        salidaPrecios.push(total)
-        total=0
-      }
-      console.log(vehiculos)
-      salidasProductos.push(modeloVehiculos[i].modelo)
-      for(var i=0;i<salidasProductos.length;i++){
-         descrip.push({producto:salidasProductos[i],precio:salidaPrecios[i]});//add object literal
-      }
-      //console.log(descrip)
-      //console.log(salidasProductos)
-      //console.log(salidaPrecios)
-      Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
-        let venta = new Venta({
-          idRegistro: ultimaVenta.idRegistro+1,
-          cuerpoSalida: descrip,
-          fSalida: Date.now()
-        })
-        venta.save()
-        res.redirect('/registroSalida/')
-      })
-    })
-  })*/
-
 
 app.listen(3000, function(){
   console.log('Server started on port 3000...');

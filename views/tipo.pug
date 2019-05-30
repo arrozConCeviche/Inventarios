@@ -1,6 +1,7 @@
 extends layout
 block content
   ul.list-group
-    each modelo, i in modelos 
+    each tipo, i in tipos
       li.list-group-item
-        a(href="/inventario/vehiculo/"+modelo.tipo)= modelo.tipo
+        a(href="/inventario/vehiculo/"+tipo)= tipo
+    

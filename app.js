@@ -94,17 +94,17 @@ let Venta = require('./models/venta')
 
 
 //Inicio
-app.get('/', (req, res) => {
+/*app.get('/', (req, res) => {
   res.render('login')
-})
+})*/
 
 //Crear Elementos para Testear
-/*app.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.render('login')
   const modeloVehiculo = new ModeloVehiculo({
     _id: new mongoose.Types.ObjectId,
     tipo: "Camioneta",
-    modelo: "4Runner",
+    modelo: "4x4",
     paisOrigen: "Japon",
     pVenta: 53190,
     neumaticoRepuesto: "Si",
@@ -123,7 +123,18 @@ app.get('/', (req, res) => {
   });
   vehiculo.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
   vehiculo.save();
-})*/
+  const vehiculo2 = new Vehiculo({
+    _id: new mongoose.Types.ObjectId,
+    color: "Azul",
+    almacen: "Lima",
+    piso: 3,
+    fila: 2,
+    columna: 1,
+    fechaEntrada: Date.now(),
+  });
+  vehiculo2.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
+  vehiculo2.save();
+})
   /*Vehiculo.find({modelo: modeloVehiculo._id}).populate('modelo').exec((err, aaa) => {
     console.log(aaa)
   })*/
@@ -310,9 +321,8 @@ app.post('/registroSalida/nuevo', (req, res) => {
     })
   })
   Vehiculo.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
-    console.log(vehiculos)
+    res.redirect('/registroSalida/')
   })
-  res.redirect('/registroSalida/')
 })
 
 app.listen(3000, function(){

@@ -5,12 +5,14 @@ block content
     .col-3
       a.button.btn.btn-outline-primary(href='/registroSalida/nuevo') Nueva Salida de Producto
   br
+  - var cant = 0
+  - var pTotal = 0
   .row
     .table-responsive
       table.table.table-striped.table-sm
         thead
           tr
-            th ID
+            th Registro
             th Nombre Producto
             th Cantidad
             th Precio
@@ -18,8 +20,8 @@ block content
             th Total
         each venta, i in ventas
           each modelo, i in modelos
-            - var cant = 0
-            - var pTotal = 0
+            - cant = 0
+            - pTotal = 0
             each producto in venta.cuerpoSalida
               each item in producto
                 if item.modelo[0].nombre == modelo.modelo
@@ -33,3 +35,4 @@ block content
                 td= modelo.pVenta
                 td= venta.fSalida
                 td= pTotal
+                - break

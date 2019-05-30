@@ -94,12 +94,12 @@ let Venta = require('./models/venta')
 
 
 //Inicio
-/*app.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.render('login')
-})*/
+})
 
 //Crear Elementos para Testear
-app.get('/', (req, res) => {
+/*app.get('/', (req, res) => {
   res.render('login')
   const modeloVehiculo = new ModeloVehiculo({
     _id: new mongoose.Types.ObjectId,
@@ -134,7 +134,7 @@ app.get('/', (req, res) => {
   });
   vehiculo2.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
   vehiculo2.save();
-})
+})*/
   /*Vehiculo.find({modelo: modeloVehiculo._id}).populate('modelo').exec((err, aaa) => {
     console.log(aaa)
   })*/

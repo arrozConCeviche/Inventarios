@@ -24,3 +24,11 @@ block content
                 td
                   .form-check
                     input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
+            each repuesto, i in repuestos
+              tbody
+                td= `${repuesto.modelo[0].tipo} - ${repuesto.modelo[0].modelo}`
+                td= repuesto.color
+                td= repuesto.almacen
+                td
+                  .form-check
+                    input.form-check-input(type='checkbox', name='seleccionarChk', value=repuesto._id)

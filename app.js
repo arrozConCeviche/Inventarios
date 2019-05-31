@@ -91,15 +91,15 @@ let ModeloVehiculo = require('./models/modeloVehiculo')
 let Vehiculo = require('./models/vehiculo')
 let ModeloRepuesto = require('./models/modeloRepuesto')
 let Venta = require('./models/venta')
-
+let Repuesto = require('./models/repuesto')
 
 //Inicio
-app.get('/', (req, res) => {
+/*app.get('/', (req, res) => {
   res.render('login')
-})
+})*/
 
 //Crear Elementos para Testear
-/*app.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.render('login')
   const modeloVehiculo = new ModeloVehiculo({
     _id: new mongoose.Types.ObjectId,
@@ -134,7 +134,28 @@ app.get('/', (req, res) => {
   });
   vehiculo2.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
   vehiculo2.save();
-})*/
+  const modeloRepuesto = new ModeloRepuesto({
+    _id: new mongoose.Types.ObjectId,
+    tipo: "Puerta",
+    modelo: "Camioneta",
+    paisOrigen: "Japon",
+    pVenta: 1090,
+  });
+  modeloRepuesto.save();
+  const repuesto = new Repuesto({
+    _id: new mongoose.Types.ObjectId,
+    color: "Rojo",
+    almacen: "Lima",
+    piso: 3,
+    fila: 2,
+    columna: 1,
+    numeroEmpaque: 5,
+    calidad: 4,
+    fechaEntrada: Date.now(),
+  });
+  repuesto.modelo.push({tipo: modeloRepuesto.tipo, modelo: modeloRepuesto.modelo , pVenta: modeloRepuesto.pVenta})
+  repuesto.save();
+})
   /*Vehiculo.find({modelo: modeloVehiculo._id}).populate('modelo').exec((err, aaa) => {
     console.log(aaa)
   })*/
@@ -253,11 +274,14 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 //Registro de Salida
 app.get('/registroSalida/', (req, res) => {
   Venta.find({}, (err, ventas) => {
-    ModeloVehiculo.find({}, (err, modelos) => {
-      res.render('registroSalida', {
-        title: 'Registro de Salida de Producto',
-        ventas: ventas,
-        modelos: modelos
+    ModeloRepuesto.find({}, (err, modelosR) => {
+      ModeloVehiculo.find({}, (err, modelosV) => {
+        res.render('registroSalida', {
+          title: 'Registro de Salida de Producto',
+          ventas: ventas,
+          modelosV: modelosV,
+          modelosR: modelosR
+        })
       })
     })
   })
@@ -269,24 +293,36 @@ app.get('/registroSalida/nuevo', (req, res) => {
   Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
     if(venta != null){
       console.log(venta)
-      ModeloVehiculo.find({}, (err, modelos) => {
+      ModeloVehiculo.find({}, (err, modelosV) => {
         Vehiculo.find({}, (err, vehiculos) => {
-          res.render('nuevaSalida', {
-            title: 'Nuevo Registro de Salida de Producto',
-            id: venta.idRegistro + 1,
-            modelos: modelos,
-            vehiculos: vehiculos
+          ModeloRepuesto.find({}, (err, modelosR) => {
+            Repuesto.find({}, (err, repuestos) => {
+              res.render('nuevaSalida', {
+                title: 'Nuevo Registro de Salida de Producto',
+                id: venta.idRegistro + 1,
+                modelosV: modelosV,
+                vehiculos: vehiculos,
+                modelosR: modelosR,
+                repuestos: repuestos
+              })
+            })
           })
         })
       })
     }else{
       ModeloVehiculo.find({}, (err, modelos) => {
         Vehiculo.find({}, (err, vehiculos) => {
-          res.render('nuevaSalida', {
-            title: 'Nuevo Registro de Salida de Producto',
-            id: 1,
-            modelos: modelos,
-            vehiculos: vehiculos
+          ModeloRepuesto.find({}, (err, modelosR) => {
+            Repuesto.find({}, (err, repuestos) => {
+              res.render('nuevaSalida', {
+                title: 'Nuevo Registro de Salida de Producto',
+                id: 1,
+                modelosV: modelosV,
+                vehiculos: vehiculos,
+                modelosR: modelosR,
+                repuestos: repuestos
+              })
+            })
           })
         })
       })
@@ -300,28 +336,30 @@ app.post('/registroSalida/nuevo', (req, res) => {
   let vendidos = req.body.vendidos
   let descrip = []
   Vehiculo.find({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vVendidos) => {
-    descrip.push(vVendidos)
-    Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
-      if(ultimaVenta != null){
-        let venta = new Venta({
-          idRegistro: ultimaVenta.idRegistro+1,
-          cuerpoSalida: descrip,
-          fSalida: Date.now()
+    Repuesto.find({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, rVendidos) => {
+      descrip.push(vVendidos, rVendidos)
+      Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, ultimaVenta) => {
+        if(ultimaVenta != null){
+          let venta = new Venta({
+            idRegistro: ultimaVenta.idRegistro+1,
+            cuerpoSalida: descrip,
+            fSalida: Date.now()
+          })
+          venta.save()
+        }
+        else{
+          let venta = new Venta({
+            idRegistro: 1,
+            cuerpoSalida: descrip,
+            fSalida: Date.now()
+          })
+          venta.save()
+        }
+        Vehiculo.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
+          res.redirect('/registroSalida/')
         })
-        venta.save()
-      }
-      else{
-        let venta = new Venta({
-          idRegistro: 1,
-          cuerpoSalida: descrip,
-          fSalida: Date.now()
-        })
-        venta.save()
-      }
+      })
     })
-  })
-  Vehiculo.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
-    res.redirect('/registroSalida/')
   })
 })
 

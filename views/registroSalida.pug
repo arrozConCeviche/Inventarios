@@ -19,20 +19,37 @@ block content
             th Fecha
             th Total
         each venta, i in ventas
-          each modelo, i in modelos
+          each modeloV, i in modelosV
             - cant = 0
             - pTotal = 0
             each producto in venta.cuerpoSalida
               each item in producto
-                if item.modelo[0].nombre == modelo.modelo
+                if item.modelo[0].nombre == modeloV.modelo
                   - cant = cant + 1
-                  - pTotal = pTotal + modelo.pVenta
+                  - pTotal = pTotal + modeloV.pVenta
             if cant>0
               tbody
                 td= venta.idRegistro
-                td= modelo.modelo
+                td= modeloV.modelo
                 td= cant
-                td= modelo.pVenta
+                td= modeloV.pVenta
+                td= venta.fSalida
+                td= pTotal
+                - break
+          each modeloR, i in modelosR
+            - cant = 0
+            - pTotal = 0
+            each producto in venta.cuerpoSalida
+              each item in producto
+                if item.modelo[0].nombre == modeloR.modelo
+                  - cant = cant + 1
+                  - pTotal = pTotal + modeloR.pVenta
+            if cant>0
+              tbody
+                td= venta.idRegistro
+                td= modeloR.modelo
+                td= cant
+                td= modeloR.pVenta
                 td= venta.fSalida
                 td= pTotal
                 - break

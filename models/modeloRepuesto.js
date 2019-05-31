@@ -17,14 +17,6 @@ let modeloRepuestoSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  numeroEmpaque:{
-    type: Number,
-    required: true
-  },
-  calidad:{
-    type: Number,
-    required: true
-  }
 });
 
 let ModeloRepuesto = module.exports = mongoose.model('ModeloRepuesto', modeloRepuestoSchema, "modeloRepuestos");

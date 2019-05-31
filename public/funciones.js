@@ -10,7 +10,8 @@ $(document).ready(function() {
       contentType: 'application/json',
       data: JSON.stringify({vendidos: vendidos}),
       success: function(response){
-        console.log(response);
+        window.location.href=('/registroSalida/')
+        //console.log(response);
       }
     });
   });

@@ -363,6 +363,130 @@ app.post('/registroSalida/nuevo', (req, res) => {
   })
 })
 
+
+//Ingresar a Productos
+app.get('/productos', (req, res) => {
+  ModeloVehiculo.find({}, (err, modelos) => {
+    res.render('productos', {
+      title: 'Control de Productos',
+      modelos: modelos
+    })
+  })
+})
+
+
+//Ingresar Crear modelo Vehiculo
+app.get('/productos/nuevo/modeloVehiculo', (req, res) => {
+  res.render('nuevoModeloVehiculo', {
+    title: 'Crear Nuevo Modelo de Vehiculo'
+  })
+})
+
+
+//Ingresar Crear modelo Repuesto
+app.get('/productos/nuevo/modeloRepuesto', (req, res) => {
+  res.render('nuevoModeloRepuesto', {
+    title: 'Crear Nuevo Modelo de Repuesto'
+  })
+})
+
+//Guardar nuevo producto -> Vehiculo
+app.post('/productos/nuevo/modeloVehiculo', (req, res) => {
+  const tipo = req.body.tipo;
+  const modelo = req.body.modelo;
+  const paisOrigen = req.body.paisOrigen;
+  const sunroof = req.body.sunroof;
+  const neumaticoRepuesto = req.body.neumaticoRepuesto;
+  const nivelSeguridad = req.body.nivelSeguridad;
+  const pVenta = req.body.pVenta;
+
+  req.checkBody('tipo', 'Tipo es Obligatorio').notEmpty();
+  req.checkBody('modelo', 'Modelo es Obligatorio').notEmpty();
+  req.checkBody('paisOrigen', 'Pais de Origen es Obligatorio').notEmpty();
+  req.checkBody('sunroof', 'Sunroof es Obligatorio').notEmpty();
+  req.checkBody('neumaticoRepuesto', 'Seleccionar si existe neumatico de repuesto').notEmpty();
+  req.checkBody('nivelSeguridad', 'Determinar nivel de seguridad').notEmpty();
+  req.checkBody('pVenta', 'Ingresar precio venta').notEmpty();
+
+  let errors = req.validationErrors();
+  if(errors){
+    res.render('nuevoModeloVehiculo', {
+      errors:errors
+    });
+  }else{
+    let nuevoModeloVehiculo = new ModeloVehiculo({
+      tipo: tipo,
+      modelo: modelo,
+      paisOrigen: paisOrigen,
+      sunroof: sunroof,
+      neumaticoRepuesto: neumaticoRepuesto,
+      seguridad: nivelSeguridad,
+      pVenta: pVenta
+    })
+    nuevoModeloVehiculo.save((err) => {
+      if (err){
+        console.log(err)
+        return
+      }
+      console.log('nuevo modelo ingresado')
+      res.redirect('/productos')
+    })
+  }
+})
+
+
+//Entrada de Productos
+app.get('/registroEntrada', (req, res) => {
+  res.render('registroEntrada', {
+    title: 'Registro Entrada de Productos'
+  })
+})
+
+
+//Entrada de Vehiculos
+app.get('/registroEntrada/nuevo/vehiculo', (req, res) => {
+  ModeloVehiculo.find({}, (err, modelos) => {
+    if(modelos != null){
+      res.render('nuevaEntradaVehiculos', {
+        title: 'Ingreso de Stock de Vehiculos',
+        modelos: modelos
+      })
+    }
+  })
+})
+
+
+//Generar entrada de productos
+app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
+  const cantidad = req.body.cantidad
+  const modelo = req.body.modelo
+  const color = req.body.color
+  const almacen = req.body.almacen
+
+  stock = []
+
+  ModeloVehiculo.findOne({modelo: modelo}, (err, modeloV) => {
+    for (i = 0; i < cantidad; i++){
+      let vehiculo = new Vehiculo({
+        modelo: modeloV,
+        color: color,
+        almacen: almacen,
+        piso: 1,
+        fila: 2,
+        columna: 3,
+        fechaEntrada: Date.now(),
+        _id: new mongoose.Types.ObjectId
+        })
+      stock.push(vehiculo)
+      console.log(vehiculo._id)
+    }
+    Vehiculo.insertMany(stock)
+    res.redirect('/registroEntrada')
+    console.log(stock)
+  })
+})
+
+
 app.listen(3000, function(){
   console.log('Server started on port 3000...');
 });

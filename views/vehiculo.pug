@@ -5,7 +5,7 @@ block content
       .row.no-gutters.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
         .col.p-4.d-flex.flex-column.position-static
           h5 Caracteristicas:
-          h6.text-muted= `Modelo:  ${vehiculo.modelo.modelo}`
+          h6.text-muted= `Modelo:  ${vehiculo.modelo[0].nombre}`
           h7.text-muted= `Pais Origen:  ${vehiculo.fila}`
           h7.text-muted= `Color:  ${vehiculo.color}`
           h7.text-muted= `Fecha Entrada:  ${vehiculo.fechaEntrada}`

@@ -23,11 +23,11 @@ block content
           th Color
           th Almacen
           th Administrador
-      tbody
         each vehiculo, i in vehiculos
-          td 
-            a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.nombre+"/"+vehiculo._id)= vehiculo._id
-          td= vehiculo.color
-          td= vehiculo.almacen
-          td 
-            a(href="/inventario/vehiculo/"+vehiculo.modelo.tipo+"/"+vehiculo.modelo.modelo+"/"+vehiculo._id) Editar
+          tbody
+            td 
+              a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].nombre+"/"+vehiculo._id)= vehiculo._id
+            td= vehiculo.color
+            td= vehiculo.almacen
+            td 
+              a(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].nombre+"/"+vehiculo._id+"/editar") Editar

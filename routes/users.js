@@ -61,7 +61,7 @@ router.post('/registrar', (req, res) => {
         }
         newUser.password = hash;
         console.log(hash)
-        /newUser.save((err) => {
+        newUser.save((err) => {
           if(err){
             console.log(err);
             return;

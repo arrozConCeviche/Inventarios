@@ -11,7 +11,6 @@ $(document).ready(function() {
       data: JSON.stringify({vendidos: vendidos}),
       success: function(response){
         window.location.href=('/registroSalida/')
-        //console.log(response);
       }
     });
   });

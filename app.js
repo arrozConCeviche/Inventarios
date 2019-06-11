@@ -456,7 +456,20 @@ app.get('/registroEntrada/nuevo/vehiculo', (req, res) => {
 })
 
 
-//Generar entrada de productos
+//Entrade de Repuestos
+app.get('/registroEntrada/nuevo/repuesto', (req, res) => {
+  ModeloRepuesto.find({}, (err, modelos) => {
+    if(modelos != null){
+      res.render('nuevaEntradaRepuestos', {
+        title: 'Ingreso de Stock de Repuestos',
+        modelos: modelos
+      })
+    }
+  })
+})
+
+
+//Generar entrada de vehiculos
 app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
   const cantidad = req.body.cantidad
   const modelo = req.body.modelo
@@ -466,6 +479,37 @@ app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
   stock = []
 
   ModeloVehiculo.findOne({modelo: modelo}, (err, modeloV) => {
+    for (i = 0; i < cantidad; i++){
+      let vehiculo = new Vehiculo({
+        modelo: modeloV,
+        color: color,
+        almacen: almacen,
+        piso: 1,
+        fila: 2,
+        columna: 3,
+        fechaEntrada: Date.now(),
+        _id: new mongoose.Types.ObjectId
+        })
+      stock.push(vehiculo)
+      console.log(vehiculo._id)
+    }
+    Vehiculo.insertMany(stock)
+    res.redirect('/registroEntrada')
+    console.log(stock)
+  })
+})
+
+
+//Generar entrada de repuestos
+app.post('/registroEntrada/nuevo/producto', (req, res) => {
+  const cantidad = req.body.cantidad
+  const modelo = req.body.modelo
+  const color = req.body.color
+  const almacen = req.body.almacen
+
+  stock = []
+
+  ModeloRepuesto.findOne({modelo: modelo}, (err, modeloV) => {
     for (i = 0; i < cantidad; i++){
       let vehiculo = new Vehiculo({
         modelo: modeloV,

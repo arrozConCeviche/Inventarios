@@ -1,8 +1,84 @@
 extends layout
 block content
-  if tipo == 'vehiculo'
-    h2.h3= modelo.modelo
-    
-    
-  if tipo == 'repuesto'
-    h2.h3= modelo.tipo
+  form(method = 'POST', action = '/registroProductos/editar/'+modelo._id)
+    if tipo == 'vehiculo'
+      .row
+        .col.md-6
+          h3.h4  Tipo
+          select#tipo.custom-select.d-block.w-100(name='tipo')
+            option(value='') Tipo Vehiculo
+            option Camioneta
+            option Deportivo
+            option Comercial
+            option Familiar
+            option Sedan
+            option Hibrido    
+        .col.md-3
+          h3.h4 Modelo
+          input#modelo.form-control(name='modelo', placeholder=modelo.modelo, value='')
+      br
+      .row
+        .col
+          h3.h4 Pais de Origen
+          input#paisOrigen.form-control(name='paisOrigen', placeholder=modelo.paisOrigen, value='')
+        .col
+          h3.h4 Sunroof
+          select#sunroof.custom-select.d-block.w-100(name='sunroof')
+            option(value='') Sunroof
+            option Si
+            option No
+      br
+      .row
+        .col
+          h3.h4 Neumatico de Repuesto
+          select#neumaticoRepuesto.custom-select.d-block.w-100(name='neumaticoRepuesto')
+            option(value='') Neumatico de Repuesto
+            option Si
+            option No    
+        .col
+          h3.h4 Nivel de Seguridad
+          select#nivelSeguridad.custom-select.d-block.w-100(name='nivelSeguridad')
+            option(value='') Nivel de Seguridad
+            option 1
+            option 2
+            option 3
+            option 4
+            option 5
+      br
+      .row
+        .col
+          h1.h4 Precio de Venta
+          input#pVenta.form-control(name='pVenta', placeholder=modelo.pVenta, value='')
+        .col
+      br
+      .row  
+        .col
+          button.btn.btn-outline-primary Guardar Cambios  
+      
+    if tipo == 'repuesto'
+      .row
+        .col
+          h3.h4  Tipo
+          input#tipo.form-control(name='tipo', placeholder=modelo.tipo, value='')
+        .col.md-3
+          h3.h4 Modelo
+          select#modelo.custom-select.d-block.w-100(name='modelo')
+            option(value='') Modelo Vehiculo
+            option Camioneta
+            option Deportivo
+            option Comercial
+            option Familiar
+            option Sedan
+            option Hibrido  
+      br
+      .row
+        .col
+          h1.h4 Pais de Origen
+          input#pVenta.form-control(name='paisOrigen', placeholder=modelo.paisOrigen, value='')
+        .col
+          h1.h4 Precio de Venta
+          input#pVenta.form-control(name='pVenta', placeholder=modelo.pVenta, value='')
+      br
+      .row  
+        .col
+          button.btn.btn-outline-primary Guardar Cambios

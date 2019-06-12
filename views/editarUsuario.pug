@@ -1,0 +1,11 @@
+extends layout
+block content
+  form(method = 'POST', action = '/usuarios/'+usuario._id)
+    .row
+      .col
+        h3.h4 Nombre Usuario
+        input#nombreUsuario.form-control(name='nombre', placeholder=usuario.nombre, value='', required='')
+    br
+    .row  
+      .col
+        button.btn.btn-outline-primary Guardar Cambios

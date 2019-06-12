@@ -92,7 +92,7 @@ let Vehiculo = require('./models/vehiculo')
 let ModeloRepuesto = require('./models/modeloRepuesto')
 let Venta = require('./models/venta')
 let Repuesto = require('./models/repuesto')
-let Users = require('./models/user')
+let User = require('./models/user')
 //Inicio
 app.get('/', (req, res) => {
   res.render('login')
@@ -397,7 +397,7 @@ app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
 
 //Ver Usuarios
 app.get('/usuarios', (req, res) => {
-  Users.find({}, (err, usuarios) => {
+  User.find({}, (err, usuarios) => {
     res.render('registroUsuario', {
       title: 'Panel de Usuarios',
       usuarios: usuarios
@@ -528,32 +528,37 @@ app.post('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
   const nuevoAlmacen = req.body.almacen
 
   Vehiculo.findById(req.params._id, (err, vehiculo) => {
-
-    if(nuevoModelo != ''){
-      console.log(vehiculo.modelo[0])
-      ModeloVehiculo.findOne({modelo: nuevoModelo}, (err, modelo) => {
-        vehiculo.modelo[0] = (modelo)
+    if (vehiculo != null) {
+      let vehiculoNuevo = {}
+      if(nuevoModelo != ''){
         console.log(vehiculo.modelo[0])
-        console.log(vehiculo)
-        vehiculo.save()
+        ModeloVehiculo.findOne({modelo: nuevoModelo}, (err, modelo) => {
+          let arrAux = []
+          arrAux.push(modelo)
+          vehiculoNuevo.modelo = arrAux
+        })
+      }
+
+      if(nuevoColor != ''){
+        vehiculoNuevo.color=nuevoColor
+        console.log(vehiculo.modelo[0])
+      }
+
+      if(nuevoAlmacen != ''){
+        vehiculoNuevo.almacen = nuevoAlmacen
+      }
+
+      let query = {_id: req.params._id}
+
+      Vehiculo.update(query, vehiculoNuevo, (err) => {
+        if(err){
+          console.log(err)
+          return
+        }
       })
-    }
 
-    if(nuevoColor != ''){
-      vehiculo.color=nuevoColor
-      console.log(vehiculo.modelo[0])
-      vehiculo.save()
+      res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
     }
-
-    if(nuevoAlmacen != ''){
-      vehiculo.almacen = nuevoAlmacen
-      console.log(nuevoAlmacen)
-    }
-
-    vehiculo.save((err) => {
-      console.log(err)
-    })
-    res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
   })
 
   /*let query = {_id: req.params._id}
@@ -572,7 +577,7 @@ app.post('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
 
 
 //Editar Modelo de Producto
-app.get('/registroProductos/editar/:_id/editar', (req, res) => {
+app.get('/registroProductos/editar/:_id', (req, res) => {
   ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
     if(modeloV != null){
       res.render('editarModelo', {
@@ -590,6 +595,111 @@ app.get('/registroProductos/editar/:_id/editar', (req, res) => {
       })
     }
   })
+})
+
+
+//Guardar Modelo Editado
+app.post('/registroProductos/editar/:_id', (req, res) => {
+  ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
+    if(modeloV != null){
+      modelo_V = {}
+      if(req.body.tipo != ''){
+        modelo_V.tipo = req.body.tipo
+      }
+      if(req.body.modelo != ''){
+        modelo_V.modelo = req.body.modelo
+      }
+      if(req.body.paisOrigen != ''){
+        modelo_V.paisOrigen = req.body.paisOrigen
+      }
+      if(req.body.sunroof != ''){
+        modelo_V.sunroof = req.body.sunroof
+      }
+      if(req.body.neumaticoRepuesto != ''){
+        modelo_V.neumaticoRepuesto = req.body.neumaticoRepuesto
+      }
+      if(req.body.seguridad != ''){
+        modelo_V.seguridad = req.body.seguridad
+      }
+      if(req.body.pVenta != ''){
+        modelo_V.pVenta = req.body.pVenta
+      }
+      let query_V = {_id: req.params._id}
+
+      ModeloVehiculo.update(query_V, modelo_V, (err) => {
+        if(err){
+          console.log(err)
+          return
+        }
+      })
+    }else{
+      ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+        if(modeloR != null){
+          let modelo_R = {}
+          if(req.body.tipo != ''){
+            modelo_R.tipo = req.body.tipo
+          }
+          if(req.body.modelo != ''){
+            modelo_R.modelo = req.body.modelo
+          }
+          if(req.body.paisOrigen != ''){
+            modelo_R.paisOrigen = req.body.paisOrigen
+          }
+          if(req.body.pVenta != ''){
+            modelo_R.pVenta = req.body.pVenta
+          }
+
+          let query_R = {_id: req.params._id}
+
+          ModeloRepuesto.update(query_R, modelo_R, (err) => {
+            if(err){
+              console.log(err)
+              return
+            }
+          })
+        }
+        else{
+          console.log('Producto no encontrado')
+          res.redirect('/')
+        }
+      })
+    }
+    res.redirect('/registroProductos/editar')
+  })
+})
+
+
+//Editar Usuario
+app.get('/usuarios/:_id', (req, res) => {
+  User.findById(req.params._id, (err, usuario) => {
+    if(usuario != null){
+      res.render('editarUsuario', {
+        title: 'Usuario - ' + usuario.nombre,
+        usuario: usuario
+      })
+    }else{
+      console.log("Usuario no existente")
+      res.redirect('/usuarios')
+    }
+  })
+})
+
+
+//Guardar Usuario -> Editado
+app.post('/usuarios/:_id', (req, res) => {
+  if(req.body.nombre != null){
+    let usuario = {}
+    usuario.nombre = req.body.nombre
+    let query = {_id: req.params._id}
+    User.update(query, usuario, (err) => {
+      if(err){
+        console.log(err)
+        return
+      }else{
+        res.redirect('/usuarios')
+      }
+    })
+  }
 })
 
 

@@ -1,0 +1,33 @@
+extends layout
+block content
+  form(method = 'POST', action = '/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo+'/'+vehiculo._id+'/'+'editar')
+    .row
+      .col
+        h3.h4 Modelo
+        select#modelo.custom-select.d-block.w-100(name='modelo')
+          option(value='') Modelo Vehiculo
+          each modelo, i in modelos
+            option= modelo
+          
+    br  
+    .row
+      .col
+        h3.h4 Color
+        select#color.custom-select.d-block.w-100(name='color')
+          option(value='') Color
+          option Azul
+          option Blanco
+          option Rojo
+          option Negro
+      .col
+        h3.h4 Almacen
+        select#almacen.custom-select.d-block.w-100(name='almacen')
+          option(value='') Almacen
+          option Los Olivos
+          option Lima
+          option Callao
+    br
+    .row
+      .col
+      .col-left
+        button.btn.btn-outline-primary Guardar Cambios

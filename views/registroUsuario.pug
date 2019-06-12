@@ -1,0 +1,22 @@
+extends layout
+block content
+  .row
+    .table-responsive
+      table.table.table-striped.table-sm
+        thead
+          tr
+            th Id
+            th Nombre
+            th Usuario
+            th Estado
+            th Ultimo Login
+            th Acciones
+          each usuario, i in usuarios  
+            tbody
+              td= usuario._id
+              td= usuario.nombre
+              td= usuario.username
+              td= Activo
+              td= Hoy
+              td
+                a(href="/usuario/"+usuario._id) Editar

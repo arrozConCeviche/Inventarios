@@ -92,77 +92,12 @@ let Vehiculo = require('./models/vehiculo')
 let ModeloRepuesto = require('./models/modeloRepuesto')
 let Venta = require('./models/venta')
 let Repuesto = require('./models/repuesto')
-
+let Users = require('./models/user')
 //Inicio
-/*app.get('/', (req, res) => {
-  res.render('login')
-})*/
-
-//Crear Elementos para Testear
 app.get('/', (req, res) => {
   res.render('login')
-  const modeloVehiculo = new ModeloVehiculo({
-    _id: new mongoose.Types.ObjectId,
-    tipo: "Camioneta",
-    modelo: "4x4",
-    paisOrigen: "Japon",
-    pVenta: 53190,
-    neumaticoRepuesto: "Si",
-    seguridad: 5,
-    sunroof: "Si"
-  });
-  modeloVehiculo.save();
-  const vehiculo = new Vehiculo({
-    _id: new mongoose.Types.ObjectId,
-    color: "Rojo",
-    almacen: "Lima",
-    piso: 3,
-    fila: 2,
-    columna: 1,
-    fechaEntrada: Date.now(),
-  });
-  vehiculo.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
-  vehiculo.save();
-  const vehiculo2 = new Vehiculo({
-    _id: new mongoose.Types.ObjectId,
-    color: "Azul",
-    almacen: "Lima",
-    piso: 3,
-    fila: 2,
-    columna: 1,
-    fechaEntrada: Date.now(),
-  });
-  vehiculo2.modelo.push({nombre: modeloVehiculo.modelo, pVenta: modeloVehiculo.pVenta})
-  vehiculo2.save();
-  const modeloRepuesto = new ModeloRepuesto({
-    _id: new mongoose.Types.ObjectId,
-    tipo: "Puerta",
-    modelo: "Camioneta",
-    paisOrigen: "Japon",
-    pVenta: 1090,
-  });
-  modeloRepuesto.save();
-  const repuesto = new Repuesto({
-    _id: new mongoose.Types.ObjectId,
-    color: "Rojo",
-    almacen: "Lima",
-    piso: 3,
-    fila: 2,
-    columna: 1,
-    numeroEmpaque: 5,
-    calidad: 4,
-    fechaEntrada: Date.now(),
-  });
-  repuesto.modelo.push({tipo: modeloRepuesto.tipo, modelo: modeloRepuesto.modelo , pVenta: modeloRepuesto.pVenta})
-  repuesto.save();
 })
-  /*Vehiculo.find({modelo: modeloVehiculo._id}).populate('modelo').exec((err, aaa) => {
-    console.log(aaa)
-  })*/
-  /*Vehiculo.find({modelo: mongoose.Types.ObjectId(modeloVehiculo._id)}, (err, test) => {
-    console.log(mongoose.Types.Array(vehiculo.modelo))
-    console.log(modeloVehiculo._id)
-  })*/
+
 
 app.post('/', (req, res, next) => {
   passport.authenticate('local', {
@@ -216,57 +151,6 @@ app.get('/inventario/vehiculo/', (req,res) => {
         tipos: distinctModelo
       })
     }
-  })
-})
-
-
-//Capturar tipo
-app.get('/inventario/vehiculo/:tipo', (req, res) => {
-  ModeloVehiculo.find({tipo: req.params.tipo}, (err, modeloVehiculos) => {
-    if(err){
-      console.log(err)
-    }else{
-      res.render('modelo', {
-        modeloVehiculos: modeloVehiculos
-      })
-    }
-  })
-})
-
-
-//Capturar modelo
-app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
-  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
-    Vehiculo.find({modelo: {$elemMatch: {nombre: modelo.modelo}}}, (err, vehiculos) =>{
-      function objLength(obj){
-        var i=0;
-        for (var x in obj){
-          if(obj.hasOwnProperty(x)){
-            i++;
-          }
-        }
-        return i;
-      }
-      res.render('vehiculos',{
-        vehiculos: vehiculos,
-        stock: objLength(vehiculos),
-        modelo: modelo,
-        title: modelo.modelo
-      })
-    })
-  })
-})
-
-
-//Capturar Vehiculo
-app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
-  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
-    Vehiculo.findById(req.params._id, (err, vehiculo) => {
-      res.render('vehiculo', {
-        vehiculo: vehiculo,
-        title: 'Vehiculo:  ' + vehiculo.id
-      })
-    })
   })
 })
 
@@ -365,10 +249,10 @@ app.post('/registroSalida/nuevo', (req, res) => {
 
 
 //Ingresar a Productos
-app.get('/productos', (req, res) => {
+app.get('/registroProductos', (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
-    res.render('productos', {
-      title: 'Control de Productos',
+    res.render('registroProductos', {
+      title: 'Registro de Modelos',
       modelos: modelos
     })
   })
@@ -376,7 +260,7 @@ app.get('/productos', (req, res) => {
 
 
 //Ingresar Crear modelo Vehiculo
-app.get('/productos/nuevo/modeloVehiculo', (req, res) => {
+app.get('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
   res.render('nuevoModeloVehiculo', {
     title: 'Crear Nuevo Modelo de Vehiculo'
   })
@@ -384,14 +268,27 @@ app.get('/productos/nuevo/modeloVehiculo', (req, res) => {
 
 
 //Ingresar Crear modelo Repuesto
-app.get('/productos/nuevo/modeloRepuesto', (req, res) => {
+app.get('/registroProductos/nuevo/modeloRepuesto', (req, res) => {
   res.render('nuevoModeloRepuesto', {
     title: 'Crear Nuevo Modelo de Repuesto'
   })
 })
 
+
+//Ingresar Editar Modelo
+app.get('/registroProductos/editar', (err, res) => {
+  ModeloVehiculo.find({}, (err, modelosV) => {
+    ModeloRepuesto.find({}, (err, modelosR) => {
+      res.render('editarModeloPrincipal', {
+        title: 'Editar Modelo',
+        modelosV: modelosV,
+        modelosR: modelosR
+      })
+    })
+  })
+})
 //Guardar nuevo producto -> Vehiculo
-app.post('/productos/nuevo/modeloVehiculo', (req, res) => {
+app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const paisOrigen = req.body.paisOrigen;
@@ -429,7 +326,7 @@ app.post('/productos/nuevo/modeloVehiculo', (req, res) => {
         return
       }
       console.log('nuevo modelo ingresado')
-      res.redirect('/productos')
+      res.redirect('/registroProductos')
     })
   }
 })
@@ -491,42 +388,207 @@ app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
         _id: new mongoose.Types.ObjectId
         })
       stock.push(vehiculo)
-      console.log(vehiculo._id)
     }
     Vehiculo.insertMany(stock)
     res.redirect('/registroEntrada')
-    console.log(stock)
   })
 })
 
 
-//Generar entrada de repuestos
-app.post('/registroEntrada/nuevo/producto', (req, res) => {
-  const cantidad = req.body.cantidad
-  const modelo = req.body.modelo
-  const color = req.body.color
-  const almacen = req.body.almacen
+//Ver Usuarios
+app.get('/usuarios', (req, res) => {
+  Users.find({}, (err, usuarios) => {
+    res.render('registroUsuario', {
+      title: 'Panel de Usuarios',
+      usuarios: usuarios
+    })
+  })
+})
 
+
+//Guardar nuevo producto -> Repuesto
+app.post('/registroEntrada/nuevo/repuesto', (req, res) => {
+  const tipo = req.body.tipo;
+  const modelo = req.body.modelo;
+  const numeroEmpaque = req.body.numeroEmpaque;
+  const almacen = req.body.almacen;
+  const calidad = req.body.calidad;
+  const color = req.body.color;
+  const cantidad = req.body.cantidad;
   stock = []
 
-  ModeloRepuesto.findOne({modelo: modelo}, (err, modeloV) => {
-    for (i = 0; i < cantidad; i++){
-      let vehiculo = new Vehiculo({
-        modelo: modeloV,
-        color: color,
-        almacen: almacen,
-        piso: 1,
-        fila: 2,
-        columna: 3,
-        fechaEntrada: Date.now(),
-        _id: new mongoose.Types.ObjectId
-        })
-      stock.push(vehiculo)
-      console.log(vehiculo._id)
+  ModeloRepuesto.findOne({modelo: modelo, tipo: tipo}, (err, modeloR) => {
+    if(modelo != null){
+      for (i = 0; i < cantidad; i++){
+        let repuesto = new Repuesto({
+          modelo: modeloR,
+          almacen: almacen,
+          color: color,
+          numeroEmpaque: numeroEmpaque,
+          calidad: calidad,
+          piso: 1,
+          fila: 2,
+          columna: 3,
+          fechaEntrada: Date.now(),
+          _id: new mongoose.Types.ObjectId
+          })
+        stock.push(repuesto)
+      }
+      Repuesto.insertMany(stock)
+      res.redirect('/registroEntrada')
     }
-    Vehiculo.insertMany(stock)
-    res.redirect('/registroEntrada')
-    console.log(stock)
+  })
+})
+
+
+//Capturar tipo
+app.get('/inventario/vehiculo/:tipo', (req, res) => {
+  ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
+    if(err){
+      console.log(err)
+    }else{
+      let modeloArray = new Array
+      for(var x in modelos){
+        modeloArray.push(modelos[x].modelo)
+      }
+      let distinctModelo = [...new Set(modeloArray)]
+      res.render('modelo', {
+        modeloVehiculos: distinctModelo,
+        tipo: req.params.tipo
+      })
+    }
+  })
+})
+
+
+//Capturar modelo
+app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
+  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+    Vehiculo.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, vehiculos) =>{
+      function objLength(obj){
+        var i=0;
+        for (var x in obj){
+          if(obj.hasOwnProperty(x)){
+            i++;
+          }
+        }
+        return i;
+      }
+      res.render('vehiculos',{
+        vehiculos: vehiculos,
+        stock: objLength(vehiculos),
+        modelo: modelo,
+        title: modelo.modelo
+      })
+    })
+  })
+})
+
+
+//Capturar Vehiculo
+app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
+  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+    Vehiculo.findById(req.params._id, (err, vehiculo) => {
+      res.render('vehiculo', {
+        vehiculo: vehiculo,
+        title: 'Vehiculo:  ' + vehiculo.id
+      })
+    })
+  })
+})
+
+//Editar Vehiculo
+app.get('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req,res) => {
+  Vehiculo.findById(req.params._id, (err, vehiculo) => {
+    ModeloVehiculo.find({}, (err, modelos) => {
+      if(err){
+        console.log(err)
+      }else{
+        let modeloArray = new Array
+        for(var x in modelos){
+          modeloArray.push(modelos[x].modelo)
+        }
+        let distinctModelo = [...new Set(modeloArray)]
+        res.render('editarVehiculo', {
+          title: 'Editar Vehiculo - ' + vehiculo._id,
+          vehiculo: vehiculo,
+          modelos: distinctModelo
+        })
+      }
+    })
+  })
+})
+
+
+//Guardar Cambio Vehiculo -> Editar Vehiculo
+app.post('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
+
+  const nuevoModelo = req.body.modelo
+  const nuevoColor = req.body.color
+  const nuevoAlmacen = req.body.almacen
+
+  Vehiculo.findById(req.params._id, (err, vehiculo) => {
+
+    if(nuevoModelo != ''){
+      console.log(vehiculo.modelo[0])
+      ModeloVehiculo.findOne({modelo: nuevoModelo}, (err, modelo) => {
+        vehiculo.modelo[0] = (modelo)
+        console.log(vehiculo.modelo[0])
+        console.log(vehiculo)
+        vehiculo.save()
+      })
+    }
+
+    if(nuevoColor != ''){
+      vehiculo.color=nuevoColor
+      console.log(vehiculo.modelo[0])
+      vehiculo.save()
+    }
+
+    if(nuevoAlmacen != ''){
+      vehiculo.almacen = nuevoAlmacen
+      console.log(nuevoAlmacen)
+    }
+
+    vehiculo.save((err) => {
+      console.log(err)
+    })
+    res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
+  })
+
+  /*let query = {_id: req.params._id}
+
+  Vehiculo.update(query, vehiculo, (err) => {
+    if(err){
+      console.log(err)
+      return
+    }else{
+      Vehiculo.findById(req.params._id, (err, vehiculo) => {
+        res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
+      })
+    }
+  })*/
+})
+
+
+//Editar Modelo de Producto
+app.get('/registroProductos/editar/:_id/editar', (req, res) => {
+  ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
+    if(modeloV != null){
+      res.render('editarModelo', {
+        title: "Editar - " + modeloV.modelo,
+        modelo: modeloV,
+        tipo: 'vehiculo'
+      })
+    }else{
+      ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+        res.render('editarModelo', {
+          title: "Editar - " + modeloR.tipo + " de " + modeloR.modelo,
+          modelo: modeloR,
+          tipo: 'repuesto'
+        })
+      })
+    }
   })
 })
 

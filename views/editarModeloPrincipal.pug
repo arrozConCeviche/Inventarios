@@ -1,0 +1,44 @@
+extends layout
+block content
+  .row
+    .col
+      h3.h5 Modelos de Vehiculos
+  .row
+    .col
+      .table-responsive
+        table.table.table-striped.table-sm
+          thead
+            tr
+              th Tipo
+              th Modelo
+              th Precio Venta
+              th Administrador
+            each modeloV, i in modelosV
+              tbody
+                td= modeloV.tipo
+                td= modeloV.modelo
+                td= modeloV.pVenta
+                td 
+                  a(href="/registroProductos/editar/"+modeloV._id+"/editar") Editar
+
+  br
+  .row
+    .col
+      h3.h5 Modelos de Repuestos
+  .row
+    .col
+      .table-responsive
+        table.table.table-striped.table-sm
+          thead
+            tr
+              th Tipo
+              th Modelo
+              th Precio Venta
+              th Administrador
+            each modeloR, i in modelosR
+              tbody
+                td= modeloR.tipo
+                td= modeloR.modelo
+                td= modeloR.pVenta
+                td 
+                  a(href="/registroProductos/editar/"+modeloR._id+"/editar") Editar

@@ -8,6 +8,8 @@ block content
   - var cant = 0
   - var pTotal = 0
   .row
+    h3.h4 Vehiculos
+  .row
     .table-responsive
       table.table.table-striped.table-sm
         thead
@@ -36,20 +38,38 @@ block content
                 td= venta.fSalida
                 td= pTotal
                 - break
-          each modeloR, i in modelosR
-            - cant = 0
-            - pTotal = 0
-            each producto in venta.cuerpoSalida
-              each item in producto
-                if item.modelo[0].nombre == modeloR.modelo
-                  - cant = cant + 1
-                  - pTotal = pTotal + modeloR.pVenta
-            if cant>0
-              tbody
-                td= venta.idRegistro
-                td= modeloR.modelo
-                td= cant
-                td= modeloR.pVenta
-                td= venta.fSalida
-                td= pTotal
-                - break
+
+
+
+
+  .row
+    h3.h4 Repuestos              
+  .row
+    .table-responsive
+      table.table.table-striped.table-sm
+        thead
+          tr
+            th Registro
+            th Nombre Producto
+            th Cantidad
+            th Precio
+            th Fecha
+            th Total
+          each venta, i in ventas
+            each modeloR, i in modelosR
+              - cant = 0
+              - pTotal = 0
+              each producto in venta.cuerpoSalida
+                each item in producto
+                  if item.modelo[0].modelo == modeloR.modelo
+                    - cant = cant + 1
+                    - pTotal = pTotal + modeloR.pVenta
+              if cant>0
+                tbody
+                  td= venta.idRegistro
+                  td= modeloR.modelo
+                  td= cant
+                  td= modeloR.pVenta
+                  td= venta.fSalida
+                  td= pTotal
+                  - break

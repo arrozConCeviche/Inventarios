@@ -8,15 +8,15 @@ block content
             th Id
             th Nombre
             th Usuario
+            th Rol
             th Estado
-            th Ultimo Login
             th Acciones
           each usuario, i in usuarios  
             tbody
               td= usuario._id
               td= usuario.nombre
               td= usuario.username
-              td= Activo
-              td= Hoy
+              td= usuario.rol
+              td Activo
               td
                 a(href="/usuarios/"+usuario._id) Editar

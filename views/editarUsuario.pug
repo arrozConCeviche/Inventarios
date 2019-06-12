@@ -4,7 +4,52 @@ block content
     .row
       .col
         h3.h4 Nombre Usuario
-        input#nombreUsuario.form-control(name='nombre', placeholder=usuario.nombre, value='', required='')
+        input#nombreUsuarioE.form-control(name='nombre', placeholder=usuario.nombre, value='')
+      
+    br
+    .row
+      .col
+        h3.h4 Direccion
+        input#direccionE.form-control(name='direccion', placeholder=usuario.direccion, value='')  
+    
+    br
+    .row
+      .col
+        h3.h4 DNI
+        input#dniE.form-control(name='dni', placeholder=usuario.dni, value='')
+      .col
+        h3.h4 Sexo
+        select#sexoE.custom-select.d-block.w-100(name='sexo')
+          option(value='') Sexo
+          option Masculino
+          option Femenino
+    br    
+    .row
+      .col
+        h3.h4 Telefono
+        input#telefonoE.form-control(name='telefono', placeholder=usuario.telefono, value='')
+      .col
+        h3.h4 Rol
+        select#rolE.custom-select.d-block.w-100(name='rol')
+          if usuario.rol == 'Vendedor'
+            option(value='')= usuario.rol
+            option Supervisor
+          if usuario.rol == 'Supervisor' 
+            option(value='')= usuario.rol
+            option Vendedor
+            
+    br
+    .row
+      .col-6
+        h3.h4 Estado Laboral
+        select#estadoLaboralE.custom-select.d-block.w-100(name='estadoLaboral')
+          if usuario.estadoLaboral == 'Activo'
+            option(value='')= usuario.estadoLaboral
+            option Inactivo
+          if usuario.estadoLaboral == 'Inactivo' 
+            option(value='')= usuario.estadoLaboral
+            option Activo
+          
     br
     .row  
       .col

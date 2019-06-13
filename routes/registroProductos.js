@@ -1,5 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+
+//Models
+let ModeloVehiculo = require('../models/modeloVehiculo')
+let ModeloRepuesto = require('../models/modeloRepuesto')
+
+
 //Ingresar a Productos
-app.get('/registroProductos', ensureAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     res.render('registroProductos', {
       title: 'Registro de Modelos',
@@ -10,7 +20,7 @@ app.get('/registroProductos', ensureAuthenticated, (req, res) => {
 
 
 //Ingresar Crear modelo Vehiculo
-app.get('/registroProductos/nuevo/modeloVehiculo', ensureAuthenticated,  (req, res) => {
+router.get('/nuevo/modeloVehiculo',  (req, res) => {
   res.render('nuevoModeloVehiculo', {
     title: 'Crear Nuevo Modelo de Vehiculo'
   })
@@ -18,7 +28,7 @@ app.get('/registroProductos/nuevo/modeloVehiculo', ensureAuthenticated,  (req, r
 
 
 //Ingresar Crear modelo Repuesto
-app.get('/registroProductos/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
+router.get('/nuevo/modeloRepuesto', (req, res) => {
   res.render('nuevoModeloRepuesto', {
     title: 'Crear Nuevo Modelo de Repuesto'
   })
@@ -26,7 +36,7 @@ app.get('/registroProductos/nuevo/modeloRepuesto', ensureAuthenticated, (req, re
 
 
 //Ingresar Editar Vehiculo
-app.get('/registroProductos/editar/vehiculo', ensureAuthenticated, (err, res) => {
+router.get('/editar/vehiculo', (err, res) => {
   ModeloVehiculo.find({}, (err, modelosV) => {
     res.render('editarModeloPrincipal', {
       title: 'Editar Modelo',
@@ -38,7 +48,7 @@ app.get('/registroProductos/editar/vehiculo', ensureAuthenticated, (err, res) =>
 
 
 //Ingresar Editar Repuesto
-app.get('/registroProductos/editar/repuesto', ensureAuthenticated, (err, res) => {
+router.get('/editar/repuesto', (err, res) => {
   ModeloRepuesto.find({}, (err, modelosR) => {
     res.render('editarModeloPrincipal', {
       title: 'Editar Modelo',
@@ -50,13 +60,13 @@ app.get('/registroProductos/editar/repuesto', ensureAuthenticated, (err, res) =>
 
 
 //Guardar nuevo producto -> Vehiculo
-app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
+router.post('/nuevo/modeloVehiculo', (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const paisOrigen = req.body.paisOrigen;
   const sunroof = req.body.sunroof;
   const neumaticoRepuesto = req.body.neumaticoRepuesto;
-  const nivelSeguridad = req.body.nivelSeguridad;
+  const seguridad = req.body.seguridad;
   const pVenta = req.body.pVenta;
 
   req.checkBody('tipo', 'Tipo es Obligatorio').notEmpty();
@@ -64,7 +74,7 @@ app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
   req.checkBody('paisOrigen', 'Pais de Origen es Obligatorio').notEmpty();
   req.checkBody('sunroof', 'Sunroof es Obligatorio').notEmpty();
   req.checkBody('neumaticoRepuesto', 'Seleccionar si existe neumatico de repuesto').notEmpty();
-  req.checkBody('nivelSeguridad', 'Determinar nivel de seguridad').notEmpty();
+  req.checkBody('seguridad', 'Determinar nivel de seguridad').notEmpty();
   req.checkBody('pVenta', 'Ingresar precio venta').notEmpty();
 
   let errors = req.validationErrors();
@@ -79,7 +89,7 @@ app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
       paisOrigen: paisOrigen,
       sunroof: sunroof,
       neumaticoRepuesto: neumaticoRepuesto,
-      seguridad: nivelSeguridad,
+      seguridad: seguridad,
       pVenta: pVenta
     })
     nuevoModeloVehiculo.save((err) => {
@@ -93,8 +103,9 @@ app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
   }
 })
 
+
 //Guardar nuevo producto -> Repuesto
-app.post('/registroEntrada/nuevo/repuesto', (req, res) => {
+router.post('/nuevo/repuesto', (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const numeroEmpaque = req.body.numeroEmpaque;
@@ -122,7 +133,106 @@ app.post('/registroEntrada/nuevo/repuesto', (req, res) => {
         stock.push(repuesto)
       }
       Repuesto.insertMany(stock)
-      res.redirect('/registroEntrada')
+      res.redirect('/registroProductos')
     }
   })
 })
+
+
+//Editar Modelo de Producto
+router.get('/editar/:_id', (req, res) => {
+  ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
+    if(modeloV != null){
+      res.render('editarModelo', {
+        title: "Editar - " + modeloV.modelo,
+        modelo: modeloV,
+        tipo: 'vehiculo'
+      })
+    }else{
+      ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+        res.render('editarModelo', {
+          title: "Editar - " + modeloR.tipo + " de " + modeloR.modelo,
+          modelo: modeloR,
+          tipo: 'repuesto'
+        })
+      })
+    }
+  })
+})
+
+
+//Guardar Modelo Editado
+router.post('/editar/:_id', (req, res) => {
+  ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
+    if(modeloV != null){
+      modelo_V = {}
+      if(req.body.tipo != ''){
+        modelo_V.tipo = req.body.tipo
+      }
+      if(req.body.modelo != ''){
+        modelo_V.modelo = req.body.modelo
+      }
+      if(req.body.paisOrigen != ''){
+        modelo_V.paisOrigen = req.body.paisOrigen
+      }
+      if(req.body.sunroof != ''){
+        modelo_V.sunroof = req.body.sunroof
+      }
+      if(req.body.neumaticoRepuesto != ''){
+        modelo_V.neumaticoRepuesto = req.body.neumaticoRepuesto
+      }
+      if(req.body.seguridad != ''){
+        modelo_V.seguridad = req.body.seguridad
+      }
+      if(req.body.pVenta != ''){
+        modelo_V.pVenta = req.body.pVenta
+      }
+      let query_V = {_id: req.params._id}
+
+      ModeloVehiculo.update(query_V, modelo_V, (err) => {
+        if(err){
+          console.log(err)
+          return
+        }
+        res.redirect('/registroProductos/editar/vehiculo')
+
+      })
+    }else{
+      ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+        if(modeloR != null){
+          let modelo_R = {}
+          if(req.body.tipo != ''){
+            modelo_R.tipo = req.body.tipo
+          }
+          if(req.body.modelo != ''){
+            modelo_R.modelo = req.body.modelo
+          }
+          if(req.body.paisOrigen != ''){
+            modelo_R.paisOrigen = req.body.paisOrigen
+          }
+          if(req.body.pVenta != ''){
+            modelo_R.pVenta = req.body.pVenta
+          }
+
+          let query_R = {_id: req.params._id}
+
+          ModeloRepuesto.update(query_R, modelo_R, (err) => {
+            if(err){
+              console.log(err)
+              return
+            }
+            res.redirect('/registroProductos/editar/repuesto')
+
+          })
+        }
+        else{
+          console.log('Producto no encontrado')
+          res.redirect('/')
+        }
+      })
+    }
+  })
+})
+
+
+module.exports = router;

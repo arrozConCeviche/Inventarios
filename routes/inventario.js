@@ -66,6 +66,7 @@ router.get('/vehiculo/:tipo', (req, res) => {
       }
       let distinctModelo = [...new Set(modeloArray)]
       res.render('modelo', {
+        title: req.params.tipo,
         modeloVehiculos: distinctModelo,
         tipo: req.params.tipo
       })
@@ -154,7 +155,6 @@ router.post('/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
 
       if(nuevoColor != ''){
         vehiculoNuevo.color=nuevoColor
-        console.log(vehiculo.modelo[0])
       }
 
       if(nuevoAlmacen != ''){
@@ -168,12 +168,11 @@ router.post('/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
           console.log(err)
           return
         }
+        res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
       })
-
-      res.redirect('/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
     }
   })
 })
 
 
-module.exports = router
+module.exports = router;

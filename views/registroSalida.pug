@@ -20,27 +20,24 @@ block content
             th Precio
             th Fecha
             th Total
-        each venta, i in ventas
-          each modeloV, i in modelosV
-            - cant = 0
-            - pTotal = 0
-            each producto in venta.cuerpoSalida
-              each item in producto
-                if item.modelo[0].nombre == modeloV.modelo
-                  - cant = cant + 1
-                  - pTotal = pTotal + modeloV.pVenta
-            if cant>0
-              tbody
-                td= venta.idRegistro
-                td= modeloV.modelo
-                td= cant
-                td= modeloV.pVenta
-                td= venta.fSalida
-                td= pTotal
-                - break
-
-
-
+          each venta, i in ventas
+            each modeloV, i in modelosV
+              - cant = 0
+              - pTotal = 0
+              each producto in venta.cuerpoSalida
+                each item in producto
+                  if item.modelo[0].modelo == modeloV.modelo
+                    - cant = cant + 1
+                    - pTotal = pTotal + modeloV.pVenta
+              if cant>0
+                tbody
+                  td= venta.idRegistro
+                  td= modeloV.modelo
+                  td= cant
+                  td= modeloV.pVenta
+                  td= venta.fSalida
+                  td= pTotal
+                  
 
   .row
     h3.h4 Repuestos              
@@ -67,7 +64,7 @@ block content
               if cant>0
                 tbody
                   td= venta.idRegistro
-                  td= modeloR.modelo
+                  td= `${modeloR.tipo} - ${modeloR.modelo}`
                   td= cant
                   td= modeloR.pVenta
                   td= venta.fSalida

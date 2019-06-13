@@ -93,12 +93,15 @@ let ModeloRepuesto = require('./models/modeloRepuesto')
 let Venta = require('./models/venta')
 let Repuesto = require('./models/repuesto')
 let User = require('./models/user')
+
+
 //Inicio
 app.get('/', (req, res) => {
   res.render('login')
 })
 
 
+//Iniciar Sesion
 app.post('/', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/inventario',
@@ -108,12 +111,24 @@ app.post('/', (req, res, next) => {
 })
 
 
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
+
+
 /////// R E P U E S T O S \\\\\\\
-app.get('/inventario/repuesto/', (req, res) => {
+app.get('/inventario/repuesto/', ensureAuthenticated, (req, res) => {
   ModeloRepuesto.find({}, (err, modelos) => {
     if(err){
       console.log(err)
     }else {
+      console.log(req.user.nombre)
       res.render('tipo', {
         title: 'Control de Inventario',
         modelos: modelos
@@ -129,14 +144,14 @@ app.use('/users', users)
 
 
 //inicio Inventario
-app.get('/inventario', (req, res) => {
+app.get('/inventario', ensureAuthenticated, (req, res) => {
   res.render('index')
 })
 
 
 /////// V E H I C U L O S \\\\\\\
 //Capturar vehiculos
-app.get('/inventario/vehiculo/', (req,res) => {
+app.get('/inventario/vehiculo/', ensureAuthenticated, (req,res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     if(err){
       console.log(err)
@@ -156,7 +171,7 @@ app.get('/inventario/vehiculo/', (req,res) => {
 
 
 //Registro de Salida
-app.get('/registroSalida/', (req, res) => {
+app.get('/registroSalida/', ensureAuthenticated, (req, res) => {
   Venta.find({}, (err, ventas) => {
     ModeloRepuesto.find({}, (err, modelosR) => {
       ModeloVehiculo.find({}, (err, modelosV) => {
@@ -173,7 +188,7 @@ app.get('/registroSalida/', (req, res) => {
 
 
 //Nuevo Registro
-app.get('/registroSalida/nuevo', (req, res) => {
+app.get('/registroSalida/nuevo', ensureAuthenticated, (req, res) => {
   Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
     if(venta != null){
       console.log(venta)
@@ -251,7 +266,7 @@ app.post('/registroSalida/nuevo', (req, res) => {
 
 
 //Ingresar a Productos
-app.get('/registroProductos', (req, res) => {
+app.get('/registroProductos', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     res.render('registroProductos', {
       title: 'Registro de Modelos',
@@ -262,7 +277,7 @@ app.get('/registroProductos', (req, res) => {
 
 
 //Ingresar Crear modelo Vehiculo
-app.get('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
+app.get('/registroProductos/nuevo/modeloVehiculo', ensureAuthenticated,  (req, res) => {
   res.render('nuevoModeloVehiculo', {
     title: 'Crear Nuevo Modelo de Vehiculo'
   })
@@ -270,25 +285,37 @@ app.get('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
 
 
 //Ingresar Crear modelo Repuesto
-app.get('/registroProductos/nuevo/modeloRepuesto', (req, res) => {
+app.get('/registroProductos/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
   res.render('nuevoModeloRepuesto', {
     title: 'Crear Nuevo Modelo de Repuesto'
   })
 })
 
 
-//Ingresar Editar Modelo
-app.get('/registroProductos/editar', (err, res) => {
+//Ingresar Editar Vehiculo
+app.get('/registroProductos/editar/vehiculo', ensureAuthenticated, (err, res) => {
   ModeloVehiculo.find({}, (err, modelosV) => {
-    ModeloRepuesto.find({}, (err, modelosR) => {
-      res.render('editarModeloPrincipal', {
-        title: 'Editar Modelo',
-        modelosV: modelosV,
-        modelosR: modelosR
-      })
+    res.render('editarModeloPrincipal', {
+      title: 'Editar Modelo',
+      modelosV: modelosV,
+      tipo: 'vehiculo'
     })
   })
 })
+
+
+//Ingresar Editar Repuesto
+app.get('/registroProductos/editar/repuesto', ensureAuthenticated, (err, res) => {
+  ModeloRepuesto.find({}, (err, modelosR) => {
+    res.render('editarModeloPrincipal', {
+      title: 'Editar Modelo',
+      modelosR: modelosR,
+      tipo: 'repuesto'
+    })
+  })
+})
+
+
 //Guardar nuevo producto -> Vehiculo
 app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
   const tipo = req.body.tipo;
@@ -335,7 +362,7 @@ app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
 
 
 //Entrada de Productos
-app.get('/registroEntrada', (req, res) => {
+app.get('/registroEntrada', ensureAuthenticated, (req, res) => {
   res.render('registroEntrada', {
     title: 'Registro Entrada de Productos'
   })
@@ -343,7 +370,7 @@ app.get('/registroEntrada', (req, res) => {
 
 
 //Entrada de Vehiculos
-app.get('/registroEntrada/nuevo/vehiculo', (req, res) => {
+app.get('/registroEntrada/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     if(modelos != null){
       res.render('nuevaEntradaVehiculos', {
@@ -356,7 +383,7 @@ app.get('/registroEntrada/nuevo/vehiculo', (req, res) => {
 
 
 //Entrade de Repuestos
-app.get('/registroEntrada/nuevo/repuesto', (req, res) => {
+app.get('/registroEntrada/nuevo/repuesto', ensureAuthenticated, (req, res) => {
   ModeloRepuesto.find({}, (err, modelos) => {
     if(modelos != null){
       res.render('nuevaEntradaRepuestos', {
@@ -398,7 +425,7 @@ app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
 
 
 //Ver Usuarios
-app.get('/usuarios', (req, res) => {
+app.get('/usuarios', ensureAuthenticated, (req, res) => {
   User.find({}, (err, usuarios) => {
     res.render('registroUsuario', {
       title: 'Panel de Usuarios',
@@ -444,7 +471,7 @@ app.post('/registroEntrada/nuevo/repuesto', (req, res) => {
 
 
 //Capturar tipo
-app.get('/inventario/vehiculo/:tipo', (req, res) => {
+app.get('/inventario/vehiculo/:tipo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
     if(err){
       console.log(err)
@@ -464,7 +491,7 @@ app.get('/inventario/vehiculo/:tipo', (req, res) => {
 
 
 //Capturar modelo
-app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
+app.get('/inventario/vehiculo/:tipo/:modelo',ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
     Vehiculo.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, vehiculos) =>{
       function objLength(obj){
@@ -488,7 +515,7 @@ app.get('/inventario/vehiculo/:tipo/:modelo', (req, res) => {
 
 
 //Capturar Vehiculo
-app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
+app.get('/inventario/vehiculo/:tipo/:modelo/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
     Vehiculo.findById(req.params._id, (err, vehiculo) => {
       res.render('vehiculo', {
@@ -500,7 +527,7 @@ app.get('/inventario/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 })
 
 //Editar Vehiculo
-app.get('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req,res) => {
+app.get('/inventario/vehiculo/:tipo/:modelo/:_id/editar', ensureAuthenticated, (req,res) => {
   Vehiculo.findById(req.params._id, (err, vehiculo) => {
     ModeloVehiculo.find({}, (err, modelos) => {
       if(err){
@@ -562,24 +589,11 @@ app.post('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
       res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
     }
   })
-
-  /*let query = {_id: req.params._id}
-
-  Vehiculo.update(query, vehiculo, (err) => {
-    if(err){
-      console.log(err)
-      return
-    }else{
-      Vehiculo.findById(req.params._id, (err, vehiculo) => {
-        res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
-      })
-    }
-  })*/
 })
 
 
 //Editar Modelo de Producto
-app.get('/registroProductos/editar/:_id', (req, res) => {
+app.get('/registroProductos/editar//:tipo/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
     if(modeloV != null){
       res.render('editarModelo', {
@@ -672,7 +686,7 @@ app.post('/registroProductos/editar/:_id', (req, res) => {
 
 
 //Editar Usuario
-app.get('/usuarios/:_id', (req, res) => {
+app.get('/usuarios/:_id', ensureAuthenticated, (req, res) => {
   User.findById(req.params._id, (err, usuario) => {
     if(usuario != null){
       res.render('editarUsuario', {

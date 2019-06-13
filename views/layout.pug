@@ -6,7 +6,7 @@ html
 
   body
     nav.sidebar.navbar.navbar-dark-top.bg-dark.flex-md-nowrap.p-0.shadow
-      img(src='/img/logo.PNG', width='256', height='150')
+      img(src='/img/logo.PNG', width='16.8%', height='150')
       ul.navbar-nav.px-3
         li.nav-item.text-nowrap
           a.button.btn.btn-outline-primary.nav-link(href='#') Cerrar Sesión
@@ -20,10 +20,12 @@ html
                   span(data-feather='home')
                   |               Panel de Control
                   span.sr-only (current)
-              li.nav-item
-                a.nav-link(href='/usuarios')
-                  span(data-feather='bar-chart-2')
-                  |               Control de Usuarios
+              if usuario
+                if usuario.rol == 'Administrador'
+                  li.nav-item
+                    a.nav-link(href='/usuarios')
+                      span(data-feather='bar-chart-2')
+                      |               Control de Usuarios
               li.nav-item
                 a.nav-link(href='/registroProductos')
                   span(data-feather='shopping-cart')

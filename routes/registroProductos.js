@@ -9,7 +9,7 @@ let ModeloRepuesto = require('../models/modeloRepuesto')
 
 
 //Ingresar a Productos
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     res.render('registroProductos', {
       title: 'Registro de Modelos',
@@ -28,7 +28,7 @@ router.get('/nuevo/modeloVehiculo',  (req, res) => {
 
 
 //Ingresar Crear modelo Repuesto
-router.get('/nuevo/modeloRepuesto', (req, res) => {
+router.get('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
   res.render('nuevoModeloRepuesto', {
     title: 'Crear Nuevo Modelo de Repuesto'
   })
@@ -39,7 +39,7 @@ router.get('/nuevo/modeloRepuesto', (req, res) => {
 router.get('/editar/vehiculo', (err, res) => {
   ModeloVehiculo.find({}, (err, modelosV) => {
     res.render('editarModeloPrincipal', {
-      title: 'Editar Modelo',
+      title: 'Editar Vehiculo',
       modelosV: modelosV,
       tipo: 'vehiculo'
     })
@@ -51,7 +51,7 @@ router.get('/editar/vehiculo', (err, res) => {
 router.get('/editar/repuesto', (err, res) => {
   ModeloRepuesto.find({}, (err, modelosR) => {
     res.render('editarModeloPrincipal', {
-      title: 'Editar Modelo',
+      title: 'Editar Repuesto',
       modelosR: modelosR,
       tipo: 'repuesto'
     })
@@ -60,7 +60,7 @@ router.get('/editar/repuesto', (err, res) => {
 
 
 //Guardar nuevo producto -> Vehiculo
-router.post('/nuevo/modeloVehiculo', (req, res) => {
+router.post('/nuevo/modeloVehiculo', ensureAuthenticated, (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const paisOrigen = req.body.paisOrigen;
@@ -105,7 +105,7 @@ router.post('/nuevo/modeloVehiculo', (req, res) => {
 
 
 //Guardar nuevo producto -> Repuesto
-router.post('/nuevo/repuesto', (req, res) => {
+router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const numeroEmpaque = req.body.numeroEmpaque;
@@ -140,7 +140,7 @@ router.post('/nuevo/repuesto', (req, res) => {
 
 
 //Editar Modelo de Producto
-router.get('/editar/:_id', (req, res) => {
+router.get('/editar/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
     if(modeloV != null){
       res.render('editarModelo', {
@@ -162,7 +162,7 @@ router.get('/editar/:_id', (req, res) => {
 
 
 //Guardar Modelo Editado
-router.post('/editar/:_id', (req, res) => {
+router.post('/editar/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
     if(modeloV != null){
       modelo_V = {}
@@ -233,6 +233,17 @@ router.post('/editar/:_id', (req, res) => {
     }
   })
 })
+
+
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
 
 
 module.exports = router;

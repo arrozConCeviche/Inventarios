@@ -12,7 +12,7 @@ let Venta = require('../models/venta')
 
 
 //Registro de Salida
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
   Venta.find({}, (err, ventas) => {
     ModeloRepuesto.find({}, (err, modelosR) => {
       ModeloVehiculo.find({}, (err, modelosV) => {
@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
 
 
 //Nuevo Registro
-router.get('/nuevo', (req, res) => {
+router.get('/nuevo', ensureAuthenticated, (req, res) => {
   Venta.findOne({}, {}, {sort: {'idRegistro' : -1}}, (err, venta) => {
     if(venta != null){
       console.log(venta)
@@ -72,7 +72,7 @@ router.get('/nuevo', (req, res) => {
 
 
 //Guardar Registro
-router.post('/nuevo', (req, res) => {
+router.post('/nuevo', ensureAuthenticated, (req, res) => {
   let vendidos = req.body.vendidos
   let descrip = []
   Vehiculo.find({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vVendidos) => {
@@ -104,5 +104,17 @@ router.post('/nuevo', (req, res) => {
     })
   })
 })
+
+
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
+
 
 module.exports = router;

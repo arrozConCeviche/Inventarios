@@ -11,7 +11,7 @@ let Repuesto = require('../models/repuesto')
 let Venta = require('../models/venta')
 
 
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
   //console.log(req.user.nombre)
   res.render('index')
 })
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 
 /////// V E H I C U L O S \\\\\\\
 //Capturar vehiculos
-router.get('/vehiculo/', (req,res) => {
+router.get('/vehiculo/', ensureAuthenticated, (req,res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     if(err){
       console.log(err)
@@ -39,7 +39,7 @@ router.get('/vehiculo/', (req,res) => {
 
 
 /////// R E P U E S T O S \\\\\\\
-router.get('/repuesto/', (req, res) => {
+router.get('/repuesto/', ensureAuthenticated, (req, res) => {
   ModeloRepuesto.find({}, (err, modelos) => {
     if(err){
       console.log(err)
@@ -55,7 +55,7 @@ router.get('/repuesto/', (req, res) => {
 
 
 //Capturar tipo
-router.get('/vehiculo/:tipo', (req, res) => {
+router.get('/vehiculo/:tipo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
     if(err){
       console.log(err)
@@ -76,7 +76,7 @@ router.get('/vehiculo/:tipo', (req, res) => {
 
 
 //Capturar modelo
-router.get('/vehiculo/:tipo/:modelo', (req, res) => {
+router.get('/vehiculo/:tipo/:modelo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
     Vehiculo.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, vehiculos) =>{
       function objLength(obj){
@@ -100,7 +100,7 @@ router.get('/vehiculo/:tipo/:modelo', (req, res) => {
 
 
 //Capturar Vehiculo
-router.get('/vehiculo/:tipo/:modelo/:_id', (req, res) => {
+router.get('/vehiculo/:tipo/:modelo/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
     Vehiculo.findById(req.params._id, (err, vehiculo) => {
       res.render('vehiculo', {
@@ -112,7 +112,7 @@ router.get('/vehiculo/:tipo/:modelo/:_id', (req, res) => {
 })
 
 //Editar Vehiculo
-router.get('/vehiculo/:tipo/:modelo/:_id/editar', (req,res) => {
+router.get('/vehiculo/:tipo/:modelo/:_id/editar', ensureAuthenticated, (req,res) => {
   Vehiculo.findById(req.params._id, (err, vehiculo) => {
     ModeloVehiculo.find({}, (err, modelos) => {
       if(err){
@@ -135,7 +135,7 @@ router.get('/vehiculo/:tipo/:modelo/:_id/editar', (req,res) => {
 
 
 //Guardar Cambio Vehiculo -> Editar Vehiculo
-router.post('/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
+router.post('/vehiculo/:tipo/:modelo/:_id/editar', ensureAuthenticated, (req, res) => {
 
   const nuevoModelo = req.body.modelo
   const nuevoColor = req.body.color
@@ -173,6 +173,18 @@ router.post('/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
     }
   })
 })
+
+
+
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
 
 
 module.exports = router;

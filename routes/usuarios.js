@@ -8,7 +8,7 @@ let User = require('../models/user');
 
 
 //Usuarios
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
   User.find({}, (err, usuarios) => {
     res.render('registroUsuario', {
       title: 'Control de Usuarios',
@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 })
 
 //Editar Usuario
-router.get('/:_id', (req, res) => {
+router.get('/:_id', ensureAuthenticated, (req, res) => {
   User.findById(req.params._id, (err, usuario) => {
     if(usuario != null){
       res.render('editarUsuario', {
@@ -34,7 +34,7 @@ router.get('/:_id', (req, res) => {
 
 
 //Guardar Usuario -> Editado
-router.post('/:_id', (req, res) => {
+router.post('/:_id', ensureAuthenticated, (req, res) => {
   let usuario = {}
   if(req.body.nombre != ''){
     usuario.nombre = req.body.nombre
@@ -69,5 +69,16 @@ router.post('/:_id', (req, res) => {
     }
   })
 })
+
+
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
 
 module.exports = router;

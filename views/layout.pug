@@ -5,42 +5,52 @@ html
     link(rel='stylesheet' href = '/bower_components/bootstrap/dist/css/bootstrap.css')
 
   body
+    
     nav.sidebar.navbar.navbar-dark-top.bg-dark.flex-md-nowrap.p-0.shadow
-      img(src='/img/logo.PNG', width='16.8%', height='150')
+      img(src='/img/logo.PNG', width='16.7%', height='150')
       ul.navbar-nav.px-3
         li.nav-item.text-nowrap
-          a.button.btn.btn-outline-primary.nav-link(href='#') Cerrar Sesión
+          a.button.btn.btn-outline-primary.nav-link(href='/users/logout') Cerrar Sesión
     .container-fluid
       .row
         nav.col-md-2.d-none.d-md-block.bg-light.sidebar
           .sidebar-sticky
             ul.nav.flex-column
+              <strong>  
+              br
               li.nav-item
                 a.nav-link(href='/inventario')
                   span(data-feather='home')
                   |               Panel de Control
                   span.sr-only (current)
-            
+              hr
               li.nav-item
                 a.nav-link(href='/usuarios')
                   span(data-feather='bar-chart-2')
                   |               Control de Usuarios
-              li.nav-item
-                a.nav-link(href='/registroProductos')
-                  span(data-feather='shopping-cart')
-                  |               Registro de Modelos
+              hr
+              if user
+                if user.rol == 'Administrador'
+                  li.nav-item
+                    a.nav-link(href='/registroProductos')
+                      span(data-feather='shopping-cart')
+                      |               Registro de Modelos
+                  hr
               li.nav-item
                 a.nav-link(href='/registroEntrada')
                   span(data-feather='users')
                   |               Ingreso de Stock
+              hr
               li.nav-item
                 a.nav-link(href='/registroSalida')
                   span(data-feather='bar-chart-2')
                   |               Registro de Salida
+              hr
               li.nav-item
                 a.nav-link(href='#')
                   span(data-feather='bar-chart-2')
                   |               Reportes
+              hr
         main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
           .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
             h1.h2 #{title}

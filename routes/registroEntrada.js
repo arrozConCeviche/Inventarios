@@ -11,7 +11,7 @@ let Repuesto = require('../models/repuesto')
 
 
 //Entrada de Productos
-router.get('/', (req, res) => {
+router.get('/', ensureAuthenticated, (req, res) => {
   res.render('registroEntrada', {
     title: 'Registro Entrada de Productos'
   })
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 
 
 //GET - Entrada de Vehiculos
-router.get('/nuevo/vehiculo', (req, res) => {
+router.get('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({}, (err, modelos) => {
     if(modelos != null){
       res.render('nuevaEntradaVehiculos', {
@@ -32,7 +32,7 @@ router.get('/nuevo/vehiculo', (req, res) => {
 
 
 //GET - Entrada de Repuestos
-router.get('/nuevo/repuesto', (req, res) => {
+router.get('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
   ModeloRepuesto.find({}, (err, modelos) => {
     if(modelos != null){
       res.render('nuevaEntradaRepuestos', {
@@ -45,7 +45,7 @@ router.get('/nuevo/repuesto', (req, res) => {
 
 
 //POST - Generar entrada de producto -> Vehiculo
-router.post('/nuevo/vehiculo', (req, res) => {
+router.post('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
   const cantidad = req.body.cantidad
   const modelo = req.body.modelo
   const color = req.body.color
@@ -73,7 +73,7 @@ router.post('/nuevo/vehiculo', (req, res) => {
 })
 
 //POST - Guardar nuevo producto -> Repuesto
-router.post('/nuevo/repuesto', (req, res) => {
+router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const numeroEmpaque = req.body.numeroEmpaque;
@@ -105,5 +105,17 @@ router.post('/nuevo/repuesto', (req, res) => {
     }
   })
 })
+
+
+//Control de Accesos
+function ensureAuthenticated(req, res, next){
+  if(req.isAuthenticated()){
+    return next()
+  }else{
+    req.flash('danger', 'Login por favor')
+    res.redirect('/')
+  }
+}
+
 
 module.exports = router;

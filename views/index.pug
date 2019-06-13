@@ -1,7 +1,13 @@
 extends layout
 block content
   .text-center
-    a(href="/inventario/vehiculo")
-      img(src='/img/vehiculo1.png')
-    a(href="/inventario/repuesto")
-      img(src='/img/repuestos1.png', width='250', height='200')
+    .row
+      .col                                                   
+        a(href="/inventario/vehiculo" tittle="VEHICULOS")
+          img(src='/img/vehiculo1.png')
+          h2.text-center(style="color: #66BED1") VEHICULOS 
+      .col
+        a(href="/inventario/repuesto")
+          img(src='/img/repuestos1.png', width='250', height='200')
+          H2.text-center(style="color: #66BED1") REPUESTOS
+          

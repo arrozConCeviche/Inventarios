@@ -3,28 +3,51 @@ html
   head
     title Team Inventarios
     link(rel='stylesheet' href = '/bower_components/bootstrap/dist/css/bootstrap.css')
-  body.text-center
-    div(style='background-image: url(/img/fondo_loggin.PNG);')
+  
+  //- imagen centrada sin el mosaico
+  body(style=" background-repeat: no-repeat; background-position: down; background-size: cover; background-image: url(/img/fondo_loggin.PNG);")
+    
+    .text-center
+      br
+      br
+      br
+      br
+      br
+      br
       form(method = 'POST', action = '/')
         != messages('message', locals)
         if errors
           each error, i in errors
             div(class="alert alert-danger") #{error.msg}
-        .container.mb-6
-          h1.h3.mb-3.font-weight-normal Bienvenido
-          h1.h5.mb-3.lead.text-muted Inciar Sesion
-          br
-          br
-          label.sr-only Email
-          input.form-control(name='username', type='email', placeholder='Email address', autofocus='')
-          label.sr-only Password
-          input.form-control.md-6(name='password', type='password', placeholder='Password')
-          br
-          input.btn.btn-primary.btn-block.md-6(type='submit', value='Entrar')
-          
-          br
-          hr
-          footer
-          p.mt-5.mb-3.text-muted Copyright &copy; 2019
+        header
+          div(class="container")
+            br
+            //- textos estaticos 
+            h1.h2.mb-3.font-weight-normal <strong> Bienvenido
+            h1.h4.mb-3.lead.text-muted Inciar Sesión</strong>
+            br
+            br
+            br
+              //-box email
+            div(class="container")
+                label.sr-only Email
+                input.form-control(style="width:350px; margin-left:33%", name='username', type='email', placeholder='Email address', autofocus='')
+
+                //-box contraseña
+                br
+                label.sr-only Password
+                input.form-control(style="width:350px; margin-left:33%",name='password', type='password', placeholder='Password')
+                br
+
+                //-boton de acceso
+                input.btn.btn-primary.btn-block(style="width:140px; margin-left:43%; background: #3D3D3D;", type='submit', value='Entrar')
+                //-
+                br
+                br
+                br
+                br
+                br
+            footer
+            p.mt-5.mb-3.text-muted Copyright &copy; 2019
   script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
   script(src='/bower_components/jquery/dist/jquery.js')

@@ -20,12 +20,11 @@ html
                   span(data-feather='home')
                   |               Panel de Control
                   span.sr-only (current)
-              if usuario
-                if usuario.rol == 'Administrador'
-                  li.nav-item
-                    a.nav-link(href='/usuarios')
-                      span(data-feather='bar-chart-2')
-                      |               Control de Usuarios
+            
+              li.nav-item
+                a.nav-link(href='/usuarios')
+                  span(data-feather='bar-chart-2')
+                  |               Control de Usuarios
               li.nav-item
                 a.nav-link(href='/registroProductos')
                   span(data-feather='shopping-cart')

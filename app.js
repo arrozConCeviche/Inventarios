@@ -90,8 +90,8 @@ app.set('view engine','pug');
 let ModeloVehiculo = require('./models/modeloVehiculo')
 let Vehiculo = require('./models/vehiculo')
 let ModeloRepuesto = require('./models/modeloRepuesto')
-let Venta = require('./models/venta')
 let Repuesto = require('./models/repuesto')
+let Venta = require('./models/venta')
 let User = require('./models/user')
 
 
@@ -121,14 +121,14 @@ function ensureAuthenticated(req, res, next){
   }
 }
 
-
+/*
 /////// R E P U E S T O S \\\\\\\
 app.get('/inventario/repuesto/', ensureAuthenticated, (req, res) => {
   ModeloRepuesto.find({}, (err, modelos) => {
     if(err){
       console.log(err)
     }else {
-      console.log(req.user.nombre)
+      console.log(req.user.rol)
       res.render('tipo', {
         title: 'Control de Inventario',
         modelos: modelos
@@ -136,19 +136,25 @@ app.get('/inventario/repuesto/', ensureAuthenticated, (req, res) => {
     }
   })
 })
-
+*/
 
 //Router
 let users = require('./routes/users')
 app.use('/users', users)
-
-
+let registroEntrada = require('./routes/registroEntrada')
+app.use('/registroEntrada', registroEntrada)
+let registroSalida = require('./routes/registroSalida')
+app.use('/registroSalida', registroSalida)
+let inventario = require('./routes/inventario')
+app.use('/inventario', inventario)
+/*
 //inicio Inventario
 app.get('/inventario', ensureAuthenticated, (req, res) => {
+  console.log(req.user.nombre)
   res.render('index')
 })
-
-
+*/
+/*
 /////// V E H I C U L O S \\\\\\\
 //Capturar vehiculos
 app.get('/inventario/vehiculo/', ensureAuthenticated, (req,res) => {
@@ -169,7 +175,7 @@ app.get('/inventario/vehiculo/', ensureAuthenticated, (req,res) => {
   })
 })
 
-
+/*
 //Registro de Salida
 app.get('/registroSalida/', ensureAuthenticated, (req, res) => {
   Venta.find({}, (err, ventas) => {
@@ -263,7 +269,7 @@ app.post('/registroSalida/nuevo', (req, res) => {
     })
   })
 })
-
+*/
 
 //Ingresar a Productos
 app.get('/registroProductos', ensureAuthenticated, (req, res) => {
@@ -361,69 +367,6 @@ app.post('/registroProductos/nuevo/modeloVehiculo', (req, res) => {
 })
 
 
-//Entrada de Productos
-app.get('/registroEntrada', ensureAuthenticated, (req, res) => {
-  res.render('registroEntrada', {
-    title: 'Registro Entrada de Productos'
-  })
-})
-
-
-//Entrada de Vehiculos
-app.get('/registroEntrada/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.find({}, (err, modelos) => {
-    if(modelos != null){
-      res.render('nuevaEntradaVehiculos', {
-        title: 'Ingreso de Stock de Vehiculos',
-        modelos: modelos
-      })
-    }
-  })
-})
-
-
-//Entrade de Repuestos
-app.get('/registroEntrada/nuevo/repuesto', ensureAuthenticated, (req, res) => {
-  ModeloRepuesto.find({}, (err, modelos) => {
-    if(modelos != null){
-      res.render('nuevaEntradaRepuestos', {
-        title: 'Ingreso de Stock de Repuestos',
-        modelos: modelos
-      })
-    }
-  })
-})
-
-
-//Generar entrada de vehiculos
-app.post('/registroEntrada/nuevo/vehiculo', (req, res) => {
-  const cantidad = req.body.cantidad
-  const modelo = req.body.modelo
-  const color = req.body.color
-  const almacen = req.body.almacen
-
-  stock = []
-
-  ModeloVehiculo.findOne({modelo: modelo}, (err, modeloV) => {
-    for (i = 0; i < cantidad; i++){
-      let vehiculo = new Vehiculo({
-        modelo: modeloV,
-        color: color,
-        almacen: almacen,
-        piso: 1,
-        fila: 2,
-        columna: 3,
-        fechaEntrada: Date.now(),
-        _id: new mongoose.Types.ObjectId
-        })
-      stock.push(vehiculo)
-    }
-    Vehiculo.insertMany(stock)
-    res.redirect('/registroEntrada')
-  })
-})
-
-
 //Ver Usuarios
 app.get('/usuarios', ensureAuthenticated, (req, res) => {
   User.find({}, (err, usuarios) => {
@@ -434,42 +377,7 @@ app.get('/usuarios', ensureAuthenticated, (req, res) => {
   })
 })
 
-
-//Guardar nuevo producto -> Repuesto
-app.post('/registroEntrada/nuevo/repuesto', (req, res) => {
-  const tipo = req.body.tipo;
-  const modelo = req.body.modelo;
-  const numeroEmpaque = req.body.numeroEmpaque;
-  const almacen = req.body.almacen;
-  const calidad = req.body.calidad;
-  const color = req.body.color;
-  const cantidad = req.body.cantidad;
-  stock = []
-
-  ModeloRepuesto.findOne({modelo: modelo, tipo: tipo}, (err, modeloR) => {
-    if(modelo != null){
-      for (i = 0; i < cantidad; i++){
-        let repuesto = new Repuesto({
-          modelo: modeloR,
-          almacen: almacen,
-          color: color,
-          numeroEmpaque: numeroEmpaque,
-          calidad: calidad,
-          piso: 1,
-          fila: 2,
-          columna: 3,
-          fechaEntrada: Date.now(),
-          _id: new mongoose.Types.ObjectId
-          })
-        stock.push(repuesto)
-      }
-      Repuesto.insertMany(stock)
-      res.redirect('/registroEntrada')
-    }
-  })
-})
-
-
+/*
 //Capturar tipo
 app.get('/inventario/vehiculo/:tipo', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
@@ -591,7 +499,7 @@ app.post('/inventario/vehiculo/:tipo/:modelo/:_id/editar', (req, res) => {
   })
 })
 
-
+*/
 //Editar Modelo de Producto
 app.get('/registroProductos/editar//:tipo/:_id', ensureAuthenticated, (req, res) => {
   ModeloVehiculo.findById(req.params._id, (err, modeloV) => {

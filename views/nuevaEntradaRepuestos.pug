@@ -1,20 +1,19 @@
 extends layout
 block content
   form(method = 'POST', action = '/registroEntrada/nuevo/repuesto')
-    .row  
-      .col.md-6
+    .row
+      .col
         h3.h4 Tipo de Repuesto
         select#tipo.custom-select.d-block.w-100(name='tipo')
           option(value='') Tipo
           each modelo, i in modelos
             option #{modelo.tipo}
-      .col.md-6
+      .col
         h3.h4 Modelo de Repuesto
         select#modelo.custom-select.d-block.w-100(name='modelo')
           option(value='') Modelo
           each modelo, i in modelos
             option #{modelo.modelo}
-    
     br
     .row
       .col

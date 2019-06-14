@@ -9,31 +9,36 @@ let Vehiculo = require('../models/vehiculo')
 let ModeloRepuesto = require('../models/modeloRepuesto')
 let Repuesto = require('../models/repuesto')
 let Venta = require('../models/venta')
-
+let User = require('../models/user')
 
 router.get('/', ensureAuthenticated, (req, res) => {
-  //console.log(req.user.nombre)
-  res.render('index')
+  res.render('index', {
+    user: req.user.rol
+  })
 })
 
 
 /////// V E H I C U L O S \\\\\\\
 //Capturar vehiculos
 router.get('/vehiculo/', ensureAuthenticated, (req,res) => {
-  ModeloVehiculo.find({}, (err, modelos) => {
-    if(err){
-      console.log(err)
-    }else{
-      let modeloArray = new Array
-      for(var x in modelos){
-        modeloArray.push(modelos[x].tipo)
+  User.findById(req.user._id, (err, usuario) => {
+    ModeloVehiculo.find({}, (err, modelos) => {
+      if(err){
+        console.log(err)
+      }else{
+        let modeloArray = new Array
+        for(var x in modelos){
+          modeloArray.push(modelos[x].tipo)
+        }
+        let distinctModelo = [...new Set(modeloArray)]
+        res.render('tipo', {
+          title: 'Control de Inventario',
+          tipos: distinctModelo,
+          usuario: usuario,
+          user: req.user.rol
+        })
       }
-      let distinctModelo = [...new Set(modeloArray)]
-      res.render('tipo', {
-        title: 'Control de Inventario',
-        tipos: distinctModelo
-      })
-    }
+    })
   })
 })
 
@@ -47,7 +52,9 @@ router.get('/repuesto/', ensureAuthenticated, (req, res) => {
       console.log(req.user.rol)
       res.render('tipo', {
         title: 'Control de Inventario',
-        modelos: modelos
+        modelos: modelos,
+        user: req.user.rol
+
       })
     }
   })
@@ -68,7 +75,8 @@ router.get('/vehiculo/:tipo', ensureAuthenticated, (req, res) => {
       res.render('modelo', {
         title: req.params.tipo,
         modeloVehiculos: distinctModelo,
-        tipo: req.params.tipo
+        tipo: req.params.tipo,
+        user: req.user.rol
       })
     }
   })
@@ -92,7 +100,8 @@ router.get('/vehiculo/:tipo/:modelo', ensureAuthenticated, (req, res) => {
         vehiculos: vehiculos,
         stock: objLength(vehiculos),
         modelo: modelo,
-        title: modelo.modelo
+        title: modelo.modelo,
+        user: req.user.rol
       })
     })
   })

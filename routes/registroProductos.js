@@ -6,56 +6,92 @@ const mongoose = require('mongoose');
 //Models
 let ModeloVehiculo = require('../models/modeloVehiculo')
 let ModeloRepuesto = require('../models/modeloRepuesto')
+let User = require('../models/user')
 
 
 //Ingresar a Productos
 router.get('/', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.find({}, (err, modelos) => {
-    res.render('registroProductos', {
-      title: 'Registro de Modelos',
-      modelos: modelos
+  if(req.user.rol == "Administrador"){
+    ModeloVehiculo.find({}, (err, modelos) => {
+      res.render('registroProductos', {
+        title: 'Registro de Modelos',
+        modelos: modelos,
+        user: req.user.rol
+
+      })
     })
-  })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 
 //Ingresar Crear modelo Vehiculo
 router.get('/nuevo/modeloVehiculo',  (req, res) => {
-  res.render('nuevoModeloVehiculo', {
-    title: 'Crear Nuevo Modelo de Vehiculo'
-  })
+  if(req.user.rol == "Administrador"){
+    res.render('nuevoModeloVehiculo', {
+      title: 'Crear Nuevo Modelo de Vehiculo',
+      user: req.user.rol
+
+    })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 
 //Ingresar Crear modelo Repuesto
 router.get('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
-  res.render('nuevoModeloRepuesto', {
-    title: 'Crear Nuevo Modelo de Repuesto'
-  })
+  if(req.user.rol == "Administrador"){
+    res.render('nuevoModeloRepuesto', {
+      title: 'Crear Nuevo Modelo de Repuesto',
+      user: req.user.rol
+
+    })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 
 //Ingresar Editar Vehiculo
 router.get('/editar/vehiculo', (err, res) => {
-  ModeloVehiculo.find({}, (err, modelosV) => {
-    res.render('editarModeloPrincipal', {
-      title: 'Editar Vehiculo',
-      modelosV: modelosV,
-      tipo: 'vehiculo'
+  if(req.user.rol == "Administrador"){
+    ModeloVehiculo.find({}, (err, modelosV) => {
+      res.render('editarModeloPrincipal', {
+        title: 'Editar Vehiculo',
+        modelosV: modelosV,
+        tipo: 'vehiculo',
+        user: req.user.rol
+
+      })
     })
-  })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 
 //Ingresar Editar Repuesto
 router.get('/editar/repuesto', (err, res) => {
-  ModeloRepuesto.find({}, (err, modelosR) => {
-    res.render('editarModeloPrincipal', {
-      title: 'Editar Repuesto',
-      modelosR: modelosR,
-      tipo: 'repuesto'
+  if(req.user.rol == "Administrador"){
+    ModeloRepuesto.find({}, (err, modelosR) => {
+      res.render('editarModeloPrincipal', {
+        title: 'Editar Repuesto',
+        modelosR: modelosR,
+        tipo: 'repuesto',
+        user: req.user.rol
+
+      })
     })
-  })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 
@@ -141,23 +177,32 @@ router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
 
 //Editar Modelo de Producto
 router.get('/editar/:_id', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
-    if(modeloV != null){
-      res.render('editarModelo', {
-        title: "Editar - " + modeloV.modelo,
-        modelo: modeloV,
-        tipo: 'vehiculo'
-      })
-    }else{
-      ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+  if(req.user.rol == "Administrador"){
+    ModeloVehiculo.findById(req.params._id, (err, modeloV) => {
+      if(modeloV != null){
         res.render('editarModelo', {
-          title: "Editar - " + modeloR.tipo + " de " + modeloR.modelo,
-          modelo: modeloR,
-          tipo: 'repuesto'
+          title: "Editar - " + modeloV.modelo,
+          modelo: modeloV,
+          tipo: 'vehiculo',
+          user: req.user.rol
+
         })
-      })
-    }
-  })
+      }else{
+        ModeloRepuesto.findById(req.params._id, (err, modeloR) => {
+          res.render('editarModelo', {
+            title: "Editar - " + modeloR.tipo + " de " + modeloR.modelo,
+            modelo: modeloR,
+            tipo: 'repuesto',
+            user: req.user.rol
+
+          })
+        })
+      }
+    })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 

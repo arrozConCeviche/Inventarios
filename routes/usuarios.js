@@ -9,27 +9,39 @@ let User = require('../models/user');
 
 //Usuarios
 router.get('/', ensureAuthenticated, (req, res) => {
-  User.find({}, (err, usuarios) => {
-    res.render('registroUsuario', {
-      title: 'Control de Usuarios',
-      usuarios: usuarios
+  if(req.user.rol == "Administrador"){
+    User.find({}, (err, usuarios) => {
+      res.render('registroUsuario', {
+        title: 'Control de Usuarios',
+        usuarios: usuarios,
+        user: req.user.rol
+      })
     })
-  })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 //Editar Usuario
 router.get('/:_id', ensureAuthenticated, (req, res) => {
-  User.findById(req.params._id, (err, usuario) => {
-    if(usuario != null){
-      res.render('editarUsuario', {
-        title: 'Usuario - ' + usuario.nombre,
-        usuario: usuario
-      })
-    }else{
-      console.log("Usuario no existente")
-      res.redirect('/usuarios')
-    }
-  })
+  if(req.user.rol == "Administrador"){
+    User.findById(req.params._id, (err, usuario) => {
+      if(usuario != null){
+        res.render('editarUsuario', {
+          title: 'Usuario - ' + usuario.nombre,
+          usuario: usuario,
+          user: req.user.rol
+        })
+      }else{
+        console.log("Usuario no existente")
+        res.redirect('/usuarios')
+      }
+    })
+  }
+  else{
+    res.redirect('/inventario')
+  }
 })
 
 

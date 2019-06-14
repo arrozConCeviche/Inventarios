@@ -1,11 +1,9 @@
 extends layout
 block content
-  .row
+  .row.d-flex.justify-content-center
     a.button.btn.btn-outline-primary(href='/registroProductos/nuevo/modeloVehiculo') Crear Modelo de Vehiculo
     a.button.btn.btn-outline-primary(href='/registroProductos/editar/vehiculo') Editar
   br
-  .row  
-    .col.md-2
-      a.button.btn.btn-outline-primary(href='/registroProductos/nuevo/modeloRepuesto') Crear Modelo de Repuesto
-    .col.md-3
-      a.button.btn.btn-outline-primary(href='/registroProductos/editar/repuesto') Editar
+  .row.d-flex.justify-content-center  
+    a.button.btn.btn-outline-primary(href='/registroProductos/nuevo/modeloRepuesto') Crear Modelo de Repuesto
+    a.button.btn.btn-outline-primary(href='/registroProductos/editar/repuesto') Editar

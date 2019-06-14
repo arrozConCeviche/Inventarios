@@ -1,5 +1,9 @@
 extends layout
 block content
+  .row  
+    .col
+      a.button.btn.btn-outline-primary(href='/users/registrar') Nuevo Usuario
+  br
   .row
     .table-responsive
       table.table.table-striped.table-sm
@@ -11,12 +15,13 @@ block content
             th Rol
             th Estado
             th Acciones
-          each usuario, i in usuarios  
-            tbody
-              td= usuario._id
-              td= usuario.nombre
-              td= usuario.username
-              td= usuario.rol
-              td Activo
-              td
-                a(href="/usuarios/"+usuario._id) Editar
+          each usuario, i in usuarios 
+            if usuario.rol != "Administrador"
+              tbody
+                td= usuario._id
+                td= usuario.nombre
+                td= usuario.username
+                td= usuario.rol
+                td Activo
+                td
+                  a(href="/usuarios/"+usuario._id) Editar

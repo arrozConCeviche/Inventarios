@@ -8,12 +8,15 @@ let ModeloVehiculo = require('../models/modeloVehiculo')
 let Vehiculo = require('../models/vehiculo')
 let ModeloRepuesto = require('../models/modeloRepuesto')
 let Repuesto = require('../models/repuesto')
+let User = require('../models/user')
 
 
 //Entrada de Productos
 router.get('/', ensureAuthenticated, (req, res) => {
   res.render('registroEntrada', {
-    title: 'Registro Entrada de Productos'
+    title: 'Registro Entrada de Productos',
+    user: req.user.rol
+
   })
 })
 
@@ -24,7 +27,9 @@ router.get('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
     if(modelos != null){
       res.render('nuevaEntradaVehiculos', {
         title: 'Ingreso de Stock de Vehiculos',
-        modelos: modelos
+        modelos: modelos,
+        user: req.user.rol
+
       })
     }
   })
@@ -37,7 +42,9 @@ router.get('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
     if(modelos != null){
       res.render('nuevaEntradaRepuestos', {
         title: 'Ingreso de Stock de Repuestos',
-        modelos: modelos
+        modelos: modelos,
+        user: req.user.rol
+
       })
     }
   })

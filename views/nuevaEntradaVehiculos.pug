@@ -1,8 +1,9 @@
 extends layout
 block content
-  form(method = 'POST', action = '/registroEntrada/nuevo/vehiculo')
-    .row  
-      .col.md-6
+  form(method = 'POST', action = '/registroEntrada/nuevo/repuesto')
+
+    .row
+      .col
         h3.h4 Modelo
         select#modelo.custom-select.d-block.w-100(name='modelo')
           option(value='') Modelo

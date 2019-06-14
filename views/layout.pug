@@ -16,41 +16,42 @@ html
         nav.col-md-2.d-none.d-md-block.bg-light.sidebar
           .sidebar-sticky
             ul.nav.flex-column
-              <strong>  
               br
               li.nav-item
                 a.nav-link(href='/inventario')
                   span(data-feather='home')
                   |               Panel de Control
                   span.sr-only (current)
-              hr
-              li.nav-item
-                a.nav-link(href='/usuarios')
-                  span(data-feather='bar-chart-2')
-                  |               Control de Usuarios
-              hr
-              if user
-                if user.rol == 'Administrador'
-                  li.nav-item
-                    a.nav-link(href='/registroProductos')
-                      span(data-feather='shopping-cart')
-                      |               Registro de Modelos
                   hr
-              li.nav-item
-                a.nav-link(href='/registroEntrada')
-                  span(data-feather='users')
-                  |               Ingreso de Stock
-              hr
+              if user == 'Administrador'
+                li.nav-item
+                  a.nav-link(href='/usuarios')
+                    span(data-feather='bar-chart-2')
+                    |               Control de Usuarios
+                    hr
+
+                li.nav-item
+                  a.nav-link(href='/registroProductos')
+                    span(data-feather='shopping-cart')
+                    |               Registro de Modelos
+                    hr
+              if user != "Vendedor"
+                li.nav-item
+                  a.nav-link(href='/registroEntrada')
+                    span(data-feather='users')
+                    |               Ingreso de Stock
+                    hr
               li.nav-item
                 a.nav-link(href='/registroSalida')
                   span(data-feather='bar-chart-2')
                   |               Registro de Salida
-              hr
-              li.nav-item
-                a.nav-link(href='#')
-                  span(data-feather='bar-chart-2')
-                  |               Reportes
-              hr
+                  hr
+              if user != "Vendedor"
+                li.nav-item
+                  a.nav-link(href='#')
+                    span(data-feather='bar-chart-2')
+                    |               Reportes
+                    hr
         main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
           .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
             h1.h2 #{title}

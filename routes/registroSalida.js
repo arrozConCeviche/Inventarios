@@ -20,7 +20,9 @@ router.get('/', ensureAuthenticated, (req, res) => {
           title: 'Registro de Salida de Producto',
           ventas: ventas,
           modelosV: modelosV,
-          modelosR: modelosR
+          modelosR: modelosR,
+          user: req.user.rol
+
         })
       })
     })
@@ -43,7 +45,9 @@ router.get('/nuevo', ensureAuthenticated, (req, res) => {
                 modelosV: modelosV,
                 vehiculos: vehiculos,
                 modelosR: modelosR,
-                repuestos: repuestos
+                repuestos: repuestos,
+                user: req.user.rol
+
               })
             })
           })
@@ -60,7 +64,9 @@ router.get('/nuevo', ensureAuthenticated, (req, res) => {
                 modelosV: modelosV,
                 vehiculos: vehiculos,
                 modelosR: modelosR,
-                repuestos: repuestos
+                repuestos: repuestos,
+                user: req.user.rol
+
               })
             })
           })

@@ -13,6 +13,8 @@ module.exports = (passport) => {
       if(err) throw err;
       if(!user){
         return done(null, false, {message: 'No existe usuario'})
+      }else if (user.estadoLaboral != "Activo") {
+        return done(null, false, {message: 'Usuario no activo, comunicarse con Administrador'})
       }
 
       //Match PW

@@ -12,16 +12,19 @@ let Venta = require('../models/venta')
 let User = require('../models/user')
 
 router.get('/', ensureAuthenticated, (req, res) => {
-  res.render('index', {
-    user: req.user.rol
+  Venta.find({}).sort({fSalida: -1}).find((err, ventas) =>{
+    res.render('index', {
+      user: req.user.rol,
+      ventas: ventas,
+    })
   })
 })
 
 
 /////// V E H I C U L O S \\\\\\\
 //Capturar vehiculos
-router.get('/vehiculo/', ensureAuthenticated, (req,res) => {
-  User.findById(req.user._id, (err, usuario) => {
+router.get('/:producto/', ensureAuthenticated, (req,res) => {
+  if(req.params.producto =="vehiculo"){
     ModeloVehiculo.find({}, (err, modelos) => {
       if(err){
         console.log(err)
@@ -34,77 +37,127 @@ router.get('/vehiculo/', ensureAuthenticated, (req,res) => {
         res.render('tipo', {
           title: 'Control de Inventario',
           tipos: distinctModelo,
-          usuario: usuario,
-          user: req.user.rol
+          user: req.user.rol,
+          producto: 'vehiculo'
         })
       }
     })
-  })
-})
-
-
-/////// R E P U E S T O S \\\\\\\
-router.get('/repuesto/', ensureAuthenticated, (req, res) => {
-  ModeloRepuesto.find({}, (err, modelos) => {
-    if(err){
-      console.log(err)
-    }else {
-      console.log(req.user.rol)
-      res.render('tipo', {
-        title: 'Control de Inventario',
-        modelos: modelos,
-        user: req.user.rol
-
-      })
-    }
-  })
+  }else if (req.params.producto == "repuesto") {
+    ModeloRepuesto.find({}, (err, modelos) => {
+      if(err){
+        console.log(err)
+      }else {
+        let modeloArray = new Array
+        for(var x in modelos){
+          modeloArray.push(modelos[x].tipo)
+        }
+        let distinctModelo = [...new Set(modeloArray)]
+        res.render('tipo', {
+          title: 'Control de Inventario',
+          tipos: distinctModelo,
+          user: req.user.rol,
+          producto: 'repuesto'
+        })
+      }
+    })
+  }else{
+    req.flash('warning', 'Pagina no encontrada')
+    res.redirect('/inventario')
+  }
 })
 
 
 //Capturar tipo
-router.get('/vehiculo/:tipo', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
-    if(err){
-      console.log(err)
-    }else{
-      let modeloArray = new Array
-      for(var x in modelos){
-        modeloArray.push(modelos[x].modelo)
+router.get('/:producto/:tipo', ensureAuthenticated, (req, res) => {
+  if(req.params.producto == "vehiculo"){
+    ModeloVehiculo.find({tipo: req.params.tipo}, (err, modelos) => {
+      if(err){
+        console.log(err)
+      }else{
+        let modeloArray = new Array
+        for(var x in modelos){
+          modeloArray.push(modelos[x].modelo)
+        }
+        let distinctModelo = [...new Set(modeloArray)]
+        res.render('modelo', {
+          title: req.params.tipo,
+          modeloVehiculos: distinctModelo,
+          tipo: req.params.tipo,
+          user: req.user.rol,
+          producto: 'vehiculo'
+        })
       }
-      let distinctModelo = [...new Set(modeloArray)]
-      res.render('modelo', {
-        title: req.params.tipo,
-        modeloVehiculos: distinctModelo,
-        tipo: req.params.tipo,
-        user: req.user.rol
-      })
-    }
-  })
+    })
+  }else if (req.params.producto == "repuesto") {
+    ModeloRepuesto.find({tipo: req.params.tipo}, (err, modelos) => {
+      if(err){
+        console.log(err)
+      }else{
+        let modeloArray = new Array
+        for(var x in modelos){
+          modeloArray.push(modelos[x].modelo)
+        }
+        let distinctModelo = [...new Set(modeloArray)]
+        res.render('modelo', {
+          title: req.params.tipo,
+          modeloVehiculos: distinctModelo,
+          tipo: req.params.tipo,
+          user: req.user.rol,
+          producto: 'repuesto'
+        })
+      }
+    })
+  }
+
 })
 
 
 //Capturar modelo
-router.get('/vehiculo/:tipo/:modelo', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
-    Vehiculo.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, vehiculos) =>{
-      function objLength(obj){
-        var i=0;
-        for (var x in obj){
-          if(obj.hasOwnProperty(x)){
-            i++;
+router.get('/:producto/:tipo/:modelo', ensureAuthenticated, (req, res) => {
+  if(req.params.producto == "vehiculo"){
+    ModeloVehiculo.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+      Vehiculo.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, vehiculos) =>{
+        function objLength(obj){
+          var i=0;
+          for (var x in obj){
+            if(obj.hasOwnProperty(x)){
+              i++;
+            }
           }
+          return i;
         }
-        return i;
-      }
-      res.render('vehiculos',{
-        vehiculos: vehiculos,
-        stock: objLength(vehiculos),
-        modelo: modelo,
-        title: modelo.modelo,
-        user: req.user.rol
+        res.render('vehiculos',{
+          vehiculos: vehiculos,
+          stock: objLength(vehiculos),
+          modelo: modelo,
+          title: modelo.modelo,
+          user: req.user.rol
+        })
       })
     })
-  })
+  }else if (req.params.producto == "repuesto") {
+    ModeloRepuesto.findOne({modelo: req.params.modelo, tipo: req.params.tipo}, (err, modelo) => {
+      Repuesto.find({modelo: {$elemMatch: {modelo: modelo.modelo}}}, (err, Repuesto) =>{
+        function objLength(obj){
+          var i=0;
+          for (var x in obj){
+            if(obj.hasOwnProperty(x)){
+              i++;
+            }
+          }
+          return i;
+        }
+        res.render('vehiculos',{
+          vehiculos: vehiculos,
+          stock: objLength(vehiculos),
+          modelo: modelo,
+          title: modelo.modelo,
+          user: req.user.rol
+        })
+      })
+    })
+  }
+
 })
 
 
@@ -114,7 +167,8 @@ router.get('/vehiculo/:tipo/:modelo/:_id', ensureAuthenticated, (req, res) => {
     Vehiculo.findById(req.params._id, (err, vehiculo) => {
       res.render('vehiculo', {
         vehiculo: vehiculo,
-        title: 'Vehiculo:  ' + vehiculo.id
+        title: 'Vehiculo:  ' + vehiculo.id,
+        user: req.user.rol
       })
     })
   })
@@ -135,7 +189,8 @@ router.get('/vehiculo/:tipo/:modelo/:_id/editar', ensureAuthenticated, (req,res)
         res.render('editarVehiculo', {
           title: 'Editar Vehiculo - ' + vehiculo._id,
           vehiculo: vehiculo,
-          modelos: distinctModelo
+          modelos: distinctModelo,
+          user: req.user.rol
         })
       }
     })
@@ -177,6 +232,7 @@ router.post('/vehiculo/:tipo/:modelo/:_id/editar', ensureAuthenticated, (req, re
           console.log(err)
           return
         }
+        req.flash('success', 'Cambios guardados correctamente');
         res.redirect('/inventario/vehiculo/'+vehiculo.modelo[0].tipo+'/'+vehiculo.modelo[0].modelo)
       })
     }

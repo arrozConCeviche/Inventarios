@@ -3,7 +3,17 @@ html
   head
     title Team Inventarios
     link(rel='stylesheet' href = '/bower_components/bootstrap/dist/css/bootstrap.css')
-
+    style.
+      .results tr[visible=='false'], .no-result{
+        display: none;
+      }
+      .results tr[visible='true']{
+        display: table-row;
+      }
+      .counter{
+        padding: 8px;
+        color: #acacac;
+      }
   body
     
     nav.sidebar.navbar.navbar-dark-top.bg-dark.flex-md-nowrap.p-0.shadow
@@ -55,7 +65,7 @@ html
         main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
           .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
             h1.h2 #{title}
-            .btn-toolbar.mb-2.mb-md-0
+          .btn-toolbar.mb-2.mb-md-0
               .btn-group.mr-2
                 button.btn.btn-sm.btn-outline-secondary(type='button') Share
                 button.btn.btn-sm.btn-outline-secondary(type='button') Export
@@ -72,6 +82,21 @@ html
               hr
               footer
               p.text-center Copyright &copy; 2019
+            
     script(src='/bower_components/jquery/dist/jquery.js')
     script(src='/funciones.js')
     script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+    script.
+        function filterText() {
+        var rex = new RegExp($('#filterText').val());
+        if (rex == "/all/") { clearFilter() } else {
+        $('.content').hide();
+        $('.content').filter(function () {
+        return rex.test($(this).text());
+        }).show();
+        }
+        }
+        function clearFilter() {
+        $('.filterText').val('');
+        $('.content').show();
+        }

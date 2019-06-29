@@ -48,7 +48,6 @@ router.get('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
     res.render('nuevoModeloRepuesto', {
       title: 'Crear Nuevo Modelo de Repuesto',
       user: req.user.rol
-
     })
   }
   else{
@@ -58,7 +57,7 @@ router.get('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
 
 
 //Ingresar Editar Vehiculo
-router.get('/editar/vehiculo', (err, res) => {
+router.get('/editar/vehiculo', ensureAuthenticated, (req, res) => {
   if(req.user.rol == "Administrador"){
     ModeloVehiculo.find({}, (err, modelosV) => {
       res.render('editarModeloPrincipal', {
@@ -66,7 +65,6 @@ router.get('/editar/vehiculo', (err, res) => {
         modelosV: modelosV,
         tipo: 'vehiculo',
         user: req.user.rol
-
       })
     })
   }
@@ -77,7 +75,7 @@ router.get('/editar/vehiculo', (err, res) => {
 
 
 //Ingresar Editar Repuesto
-router.get('/editar/repuesto', (err, res) => {
+router.get('/editar/repuesto', (req, res) => {
   if(req.user.rol == "Administrador"){
     ModeloRepuesto.find({}, (err, modelosR) => {
       res.render('editarModeloPrincipal', {
@@ -169,6 +167,7 @@ router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
         stock.push(repuesto)
       }
       Repuesto.insertMany(stock)
+      req.flash('success', 'Modelo creado correctamente');
       res.redirect('/registroProductos')
     }
   })
@@ -239,6 +238,7 @@ router.post('/editar/:_id', ensureAuthenticated, (req, res) => {
           console.log(err)
           return
         }
+        req.flash('success', 'Modelo Actualizado');
         res.redirect('/registroProductos/editar/vehiculo')
 
       })
@@ -266,6 +266,7 @@ router.post('/editar/:_id', ensureAuthenticated, (req, res) => {
               console.log(err)
               return
             }
+            req.flash('success', 'Modelo Actualizado');
             res.redirect('/registroProductos/editar/repuesto')
 
           })

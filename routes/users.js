@@ -66,7 +66,7 @@ router.post('/registrar', (req, res) => {
             console.log(err);
             return;
           }
-          console.log('usuario creado')
+          req.flash('success', 'Usuario creado');
           res.redirect('/usuarios')
         })
       })

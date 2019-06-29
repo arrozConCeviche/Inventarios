@@ -74,6 +74,7 @@ router.post('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
         })
       stock.push(vehiculo)
     }
+    console.log(stock)
     Vehiculo.insertMany(stock)
     res.redirect('/registroEntrada')
   })
@@ -108,6 +109,7 @@ router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
         stock.push(repuesto)
       }
       Repuesto.insertMany(stock)
+      req.flash('success', 'Productos registrados correctamente');
       res.redirect('/registroEntrada')
     }
   })

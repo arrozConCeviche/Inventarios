@@ -10,4 +10,29 @@ block content
         a(href="/inventario/repuesto")
           img(src='/img/repuestos1.png', width='250', height='200')
           H2.text-center(style="color: #66BED1") REPUESTOS
-          
+    
+    br      
+    .row
+      .col
+        h3.h4= `Ultimas Ventas`
+        .table-responsive
+          table.table.table-striped.table-sm
+            thead
+              tr
+                th Registro Salida
+                th Fecha
+                th Monto Total
+              - var cont = 0
+              - var montoTotal = 0
+              each venta, i in ventas
+                - montoTotal = 0
+                tbody
+                  td= venta.idRegistro
+                  td= venta.fSalida
+                  each salida, i in venta.cuerpoSalida
+                    each item, i in salida
+                      - montoTotal = montoTotal + item.modelo[0].pVenta
+                  td= montoTotal
+                  - cont++
+                  if cont == 5
+                    - break

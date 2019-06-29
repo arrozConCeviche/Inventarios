@@ -103,6 +103,7 @@ router.post('/nuevo', ensureAuthenticated, (req, res) => {
         }
         Vehiculo.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, vehiculos) => {
           Repuesto.deleteMany({_id: {$in: mongoose.Types.Array(vendidos)}}, (err, repuestos) => {
+            req.flash('success', 'Salida de productos guardada');
             res.redirect('/registroSalida/')
           })
         })

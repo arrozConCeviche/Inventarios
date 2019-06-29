@@ -4,31 +4,39 @@ block content
       .col-9
         h1.h3= `Registro de Salida - ${id}`
       .col-3
-        button.btn.btn-outline-primary(name='button') Guardar Salida de Producto
+        select#filterText.custom-select.d-block.w-100(name='filterText')
+          option(disabled ='', selected='') Buscar
+          option(value='4Runner') 4Runner
+          option(value='Test01') Test01
+          option(value='Test02') Test02
     br  
     .row
       .col-12
         .table-responsive
-          table.table.table-striped.table-sm
+          table#tablaProductos.table.table-striped.table-sm(data-toggle='table', data-toolbar='#toolbar', data-height='400', data-url='json/data1.json')
             thead
               tr
                 th Modelo
                 th Color
                 th Almacen
                 th Seleccionar
-            each vehiculo, i in vehiculos 
-              tbody
-                td= vehiculo.modelo[0].modelo
-                td= vehiculo.color
-                td= vehiculo.almacen
-                td
-                  .form-check
-                    input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
-            each repuesto, i in repuestos
-              tbody
-                td= `${repuesto.modelo[0].tipo} - ${repuesto.modelo[0].modelo}`
-                td= repuesto.color
-                td= repuesto.almacen
-                td
-                  .form-check
-                    input.form-check-input(type='checkbox', name='seleccionarChk', value=repuesto._id)
+            tbody
+              each vehiculo, i in vehiculos 
+                tr.content
+                  td= vehiculo.modelo[0].modelo
+                  td= vehiculo.color
+                  td= vehiculo.almacen
+                  td
+                    .form-check
+                      input.form-check-input(type='checkbox', name='seleccionarChk', value=vehiculo._id)
+              each repuesto, i in repuestos
+                tr.content
+                  td= `${repuesto.modelo[0].tipo} - ${repuesto.modelo[0].modelo}`
+                  td= repuesto.color
+                  td= repuesto.almacen
+                  td
+                    .form-check
+                      input.form-check-input(type='checkbox', name='seleccionarChk', value=repuesto._id)
+    .row
+      .col
+          button.btn.btn-outline-primary(name='button') Guardar Salida de Producto

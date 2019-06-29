@@ -77,6 +77,7 @@ router.post('/:_id', ensureAuthenticated, (req, res) => {
       console.log(err)
       return
     }else{
+      req.flash('success', 'Usuario actualizado');
       res.redirect('/usuarios')
     }
   })

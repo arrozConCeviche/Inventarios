@@ -21,34 +21,37 @@ router.get('/', ensureAuthenticated, (req, res) => {
 })
 
 
-//GET - Entrada de Vehiculos
-router.get('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
-  ModeloVehiculo.find({}, (err, modelos) => {
-    if(modelos != null){
-      res.render('nuevaEntradaVehiculos', {
-        title: 'Ingreso de Stock de Vehiculos',
-        modelos: modelos,
-        user: req.user.rol
 
-      })
-    }
-  })
+//GET - Productos
+router.get('/nuevo/:producto', ensureAuthenticated, (req, res) => {
+  if(req.params.producto.toLowerCase() == 'vehiculo'){
+    ModeloVehiculo.find({}, (err, modelos) => {
+      if(modelos != null){
+        res.render('nuevaEntrada', {
+          title: 'Ingreso de Stock de Vehiculos',
+          modelos: modelos,
+          user: req.user.rol,
+          producto: 'vehiculo'
+        })
+      }
+    })
+  }else if(req.params.producto.toLowerCase() == 'repuesto'){
+    ModeloRepuesto.find({}, (err, modelos) => {
+      if(modelos != null){
+        res.render('nuevaEntrada', {
+          title: 'Ingreso de Stock de Repuestos',
+          modelos: modelos,
+          user: req.user.rol,
+          producto: 'repuesto'
+        })
+      }
+    })
+  }else{
+    req.flash('warning', 'Pagina no encontrada')
+    res.redirect('/registroEntrada')
+  }
 })
 
-
-//GET - Entrada de Repuestos
-router.get('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
-  ModeloRepuesto.find({}, (err, modelos) => {
-    if(modelos != null){
-      res.render('nuevaEntradaRepuestos', {
-        title: 'Ingreso de Stock de Repuestos',
-        modelos: modelos,
-        user: req.user.rol
-
-      })
-    }
-  })
-})
 
 
 //POST - Generar entrada de producto -> Vehiculo

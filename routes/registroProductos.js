@@ -26,31 +26,25 @@ router.get('/', ensureAuthenticated, (req, res) => {
   }
 })
 
-
-//Ingresar Crear modelo Vehiculo
-router.get('/nuevo/modeloVehiculo',  (req, res) => {
+router.get('/nuevo/:modeloProducto', ensureAuthenticated, (req, res) => {
   if(req.user.rol == "Administrador"){
-    res.render('nuevoModeloVehiculo', {
-      title: 'Crear Nuevo Modelo de Vehiculo',
-      user: req.user.rol
-
-    })
-  }
-  else{
-    res.redirect('/inventario')
-  }
-})
-
-
-//Ingresar Crear modelo Repuesto
-router.get('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
-  if(req.user.rol == "Administrador"){
-    res.render('nuevoModeloRepuesto', {
-      title: 'Crear Nuevo Modelo de Repuesto',
-      user: req.user.rol
-    })
-  }
-  else{
+    if(req.params.modeloProducto.toLowerCase() == 'modelovehiculo'){
+      res.render('nuevoModeloProducto', {
+        title: 'Crear Nuevo Modelo de Vehiculo',
+        user: req.user.rol,
+        producto: req.params.modeloProducto.toLowerCase()
+      })
+    }else if(req.params.modeloProducto.toLowerCase() == 'modelorepuesto'){
+      res.render('nuevoModeloProducto', {
+        title: 'Crear Nuevo Modelo de Repuesto',
+        user: req.user.rol,
+        producto: req.params.modeloProducto.toLowerCase()
+      })
+    }else{
+      req.flash('warning', 'Pagina no encontrada')
+      res.redirect('/registroProductos')
+    }
+  }else{
     res.redirect('/inventario')
   }
 })

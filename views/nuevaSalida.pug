@@ -3,17 +3,17 @@ block content
     .row
       .col-9
         h1.h3= `Registro de Salida - ${id}`
+    br
+    .row
       .col-3
-        select#filterText.custom-select.d-block.w-100(name='filterText')
-          option(disabled ='', selected='') Buscar
-          option(value='4Runner') 4Runner
-          option(value='Test01') Test01
-          option(value='Test02') Test02
+        input#filterText.form-control(name='filterText', onkeyup="myFunction()", placeholder="Buscar")
+      .col-9
+        button.btn.btn-outline-primary.float-right(name='button') Guardar Salida de Producto
     br  
     .row
       .col-12
         .table-responsive
-          table#tablaProductos.table.table-striped.table-sm(data-toggle='table', data-toolbar='#toolbar', data-height='400', data-url='json/data1.json')
+          table#myTable.table.table-striped.table-sm(data-toggle='table', data-toolbar='#toolbar', data-height='400', data-url='json/data1.json')
             thead
               tr
                 th Modelo
@@ -37,6 +37,3 @@ block content
                   td
                     .form-check
                       input.form-check-input(type='checkbox', name='seleccionarChk', value=repuesto._id)
-    .row
-      .col
-          button.btn.btn-outline-primary(name='button') Guardar Salida de Producto

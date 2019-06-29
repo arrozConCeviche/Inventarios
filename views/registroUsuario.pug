@@ -1,8 +1,8 @@
 extends layout
 block content
-  .row  
+  .row
     .col
-      a.button.btn.btn-outline-primary(href='/users/registrar') Nuevo Usuario
+      a.button.btn.btn-outline-primary.float-right(href='/users/registrar') Nuevo Usuario
   br
   .row
     .table-responsive
@@ -22,6 +22,6 @@ block content
                 td= usuario.nombre
                 td= usuario.username
                 td= usuario.rol
-                td Activo
+                td= usuario.estadoLaboral
                 td
                   a(href="/usuarios/"+usuario._id) Editar

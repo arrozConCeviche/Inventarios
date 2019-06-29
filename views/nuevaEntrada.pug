@@ -1,0 +1,91 @@
+extends layout
+block content
+  if producto=="repuesto"
+    form(method = 'POST', action = '/registroEntrada/nuevo/repuesto')
+      .row
+        .col
+          h3.h4 Tipo de Repuesto
+          select#tipo.custom-select.d-block.w-100(name='tipo')
+            option(value='') Tipo
+            each modelo, i in modelos
+              option #{modelo.tipo}
+        .col
+          h3.h4 Modelo de Repuesto
+          select#modelo.custom-select.d-block.w-100(name='modelo')
+            option(value='') Modelo
+            each modelo, i in modelos
+              option #{modelo.modelo}
+      br
+      .row
+        .col
+          h3.h4 Numero de Empaque
+          input#numeroEmpaque.form-control(name='numeroEmpaque')
+        .col
+          h3.h4 Calidad
+          select#calidad.custom-select.d-block.w-100(name='calidad')
+            option(value='') Calidad
+            option 1
+            option 2
+            option 3
+            option 4
+            option 5
+      br
+      .row
+        .col
+          h3.h4 Almacen
+          select#almacen.custom-select.d-block.w-100(name='almacen')
+            option(value='') Almacen
+            option Los Olivos
+            option Lima
+            option Callao
+        .col
+          h3.h4 Color
+          select#color.custom-select.d-block.w-100(name='color')
+            option(value='') Color
+            option Azul
+            option Blanco
+            option Rojo
+            option Negro
+        .col
+          h3.h4 Cantidad
+          input#cantidad.form-control(name='cantidad')
+      br
+      .row
+        .col
+        .col-left
+          button.btn.btn-outline-primary Ingresar Stock
+  else if producto=="vehiculo"
+    form(method = 'POST', action = '/registroEntrada/nuevo/repuesto')
+  
+      .row
+        .col
+          h3.h4 Modelo
+          select#modelo.custom-select.d-block.w-100(name='modelo')
+            option(value='') Modelo
+            each modelo, i in modelos
+              option #{modelo.modelo}
+        .col
+          h3.h4 Cantidad
+          input#cantidad.form-control(name='cantidad')
+      br
+      .row
+        .col
+          h3.h4 Color
+          select#color.custom-select.d-block.w-100(name='color')
+            option(value='') Color
+            option Azul
+            option Blanco
+            option Rojo
+            option Negro
+        .col
+          h3.h4 Almacen
+          select#almacen.custom-select.d-block.w-100(name='almacen')
+            option(value='') Almacen
+            option Los Olivos
+            option Lima
+            option Callao
+      br
+      .row
+        .col
+        .col-left
+          button.btn.btn-outline-primary Ingresar Stock

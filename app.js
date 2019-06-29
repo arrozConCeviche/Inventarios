@@ -124,7 +124,11 @@ app.use('/usuarios', usuarios, ensureAuthenticated)
 
 //Inicio
 app.get('/', (req, res) => {
-  res.render('login')
+  if (req.user == null){
+    res.render('login')
+  }else{
+    res.redirect('/inventario')
+  }
 })
 
 

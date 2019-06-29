@@ -29,5 +29,6 @@ block content
               a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].modelo+"/"+vehiculo._id)= vehiculo._id
             td= vehiculo.color
             td= vehiculo.almacen
-            td 
-              a(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].modelo+"/"+vehiculo._id+"/editar") Editar
+            if user.rol=="Administrador"
+              td 
+                a(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].modelo+"/"+vehiculo._id+"/editar") Editar

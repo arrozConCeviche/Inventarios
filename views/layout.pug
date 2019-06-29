@@ -20,7 +20,7 @@ html
       img(src='/img/logo.PNG', width='16.7%', height='150')
       ul.navbar-nav.px-3
         li.nav-item.text-nowrap
-          a.button.btn.btn-outline-primary.nav-link(href='/users/logout') Cerrar Sesión
+          a.button.btn.btn-danger(href='/users/logout') Cerrar Sesión
     .container-fluid
       .row
         nav.col-md-2.d-none.d-md-block.bg-light.sidebar
@@ -28,6 +28,7 @@ html
             ul.nav.flex-column
               br
               li.nav-item
+                hr
                 a.nav-link(href='/inventario')
                   span(data-feather='home')
                   |               Panel de Control
@@ -65,13 +66,6 @@ html
         main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
           .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
             h1.h2 #{title}
-          .btn-toolbar.mb-2.mb-md-0
-              .btn-group.mr-2
-                button.btn.btn-sm.btn-outline-secondary(type='button') Share
-                button.btn.btn-sm.btn-outline-secondary(type='button') Export
-              button.btn.btn-sm.btn-outline-secondary.dropdown-toggle(type='button')
-                span(data-feather='calendar')
-                |             This week
           != messages('message', locals)
           if errors
             each error, i in errors
@@ -87,16 +81,24 @@ html
     script(src='/funciones.js')
     script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
     script.
-        function filterText() {
-        var rex = new RegExp($('#filterText').val());
-        if (rex == "/all/") { clearFilter() } else {
-        $('.content').hide();
-        $('.content').filter(function () {
-        return rex.test($(this).text());
-        }).show();
+      function myFunction() {
+      // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("filterText");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
         }
-        }
-        function clearFilter() {
-        $('.filterText').val('');
-        $('.content').show();
-        }
+      }

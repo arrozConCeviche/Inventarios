@@ -111,16 +111,17 @@ let users = require('./routes/users')
 app.use('/users', users)
 
 let inventario = require('./routes/inventario')
-app.use('/inventario', inventario, ensureAuthenticated)
+app.use('/inventario', inventario)
 let registroProductos = require('./routes/registroProductos')
-app.use('/registroProductos', registroProductos, ensureAuthenticated)
+app.use('/registroProductos', registroProductos)
 let registroEntrada = require('./routes/registroEntrada')
-app.use('/registroEntrada', registroEntrada, ensureAuthenticated)
+app.use('/registroEntrada', registroEntrada)
 let registroSalida = require('./routes/registroSalida')
-app.use('/registroSalida', registroSalida, ensureAuthenticated)
+app.use('/registroSalida', registroSalida)
 let usuarios = require('./routes/usuarios')
-app.use('/usuarios', usuarios, ensureAuthenticated)
-
+app.use('/usuarios', usuarios)
+let registroReportes = require('./routes/registroReportes')
+app.use('/registroReportes', registroReportes)
 
 //Inicio
 app.get('/', (req, res) => {

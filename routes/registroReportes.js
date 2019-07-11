@@ -23,29 +23,29 @@ router.get('/', ensureAuthenticated, (req, res) => {
                     {mes: 'Noviembre', productosVendidos:[]},
                     {mes: 'Diciembre', productosVendidos:[]}]
 
-    for (var i = 0; i < ventaMensual.length; i++) {                                   // Iterar por mes
+    for (var i = 0; i < ventaMensual.length; i++) {
       for (var j = 0; j < ventas.length; j++) {
         mes = moment(ventas[j].fSalida, 'DDMMYYYY').format('MMMM')                    // Formato mes
         if (mes == ventaMensual[i].mes.toLowerCase()) {                               // Comparar meses
           for (var k = 0; k < ventas[j].cuerpoSalida.length; k++) {                   // Iterar en cuerpoSalida - Vehiculo y Repuesto
             for (var l = 0; l < ventas[j].cuerpoSalida[k].length; l++) {              // Iterar en productos vendidos - Venta
-              for (var m = 0; m < ventaMensual[i].productosVendidos.length; m++) {    // Iterar en productos vendidos almacenados - Arreglo
-                console.log('fin de iteracion')
-                if (ventas[j].cuerpoSalida[k][l].modelo[0].modelo.toLowerCase() == ventaMensual[i].productosVendidos[m].producto.toLowerCase()) {
-                  ventaMensual[i].productosVendidos[m].montoAcumulado = ventaMensual[i].productosVendidos[m].montoAcumulado + ventas[j].cuerpoSalida[k][l].modelo[0].pVenta
-                  ventaMensual[i].productosVendidos[m].cantidad++
-                  console.log(ventaMensual)
-                  break
-                }
+              if (ventaMensual[i].productosVendidos.length == 0) {
                 ventaMensual[i].productosVendidos.push({producto: ventas[j].cuerpoSalida[k][l].modelo[0].modelo, montoAcumulado: ventas[j].cuerpoSalida[k][l].modelo[0].pVenta, cantidad: 1})
-                console.log(ventaMensual)
+              }else{
+                for (var m = 0; m < ventaMensual[i].productosVendidos.length; m++) {    // Iterar en productos vendidos almacenados - Arreglo
+                  if (ventas[j].cuerpoSalida[k][l].modelo[0].modelo.toLowerCase() == ventaMensual[i].productosVendidos[m].producto.toLowerCase()) {
+                    ventaMensual[i].productosVendidos[m].montoAcumulado = ventaMensual[i].productosVendidos[m].montoAcumulado + ventas[j].cuerpoSalida[k][l].modelo[0].pVenta
+                    ventaMensual[i].productosVendidos[m].cantidad++
+                    break
+                  }
+                  ventaMensual[i].productosVendidos.push({producto: ventas[j].cuerpoSalida[k][l].modelo[0].modelo, montoAcumulado: ventas[j].cuerpoSalida[k][l].modelo[0].pVenta, cantidad: 1})
+                }
               }
             }
           }
         }
       }
     }
-    console.log(ventaMensual)
     res.render('registroReportes', {
       user: req.user.rol,
       title: 'Reportes',

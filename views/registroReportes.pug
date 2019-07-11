@@ -8,20 +8,24 @@ block content
         th(scope='col') Cantidad
         th(scope='col') Suma Total de Venta
     tbody
+      - var totalMes = 0
       each mes, i in ventaMensual
-        each producto, i in mes.productosVendidos
+        - totalMes = 0
+        if mes.productosVendidos[0] != null
           tr
             th(scope='row')= mes.mes
-            td producto
-            td producto
-            td 2000
+            td 
+            td 
+            td 
+          each producto, i in mes.productosVendidos
+            - totalMes = totalMes + producto.montoAcumulado
+            tr
+              th(scope='row')
+              td= producto.producto
+              td= producto.cantidad
+              td= producto.montoAcumulado
           tr
-            th(scope='row')
-            td Camioneta
-            td producto
-            td 2000
-          tr
-            th(scope='row')
-            td asd
-            td producto
-            td 11
+            th(scope='row') Total del Mes
+            td 
+            td 
+            td= totalMes

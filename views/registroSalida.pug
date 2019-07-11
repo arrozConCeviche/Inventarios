@@ -67,6 +67,6 @@ block content
                   td= `${modeloR.tipo} - ${modeloR.modelo}`
                   td= cant
                   td= modeloR.pVenta
-                  td= venta.fSalida
+                  td= moment(venta.fSalida, "DDMMYYYY").format('LL')
                   td= pTotal
                   - break

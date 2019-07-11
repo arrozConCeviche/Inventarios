@@ -9,7 +9,7 @@ let vehiculoSchema = mongoose.Schema({
     type: Array
   },
   fSalida: {
-    type: Date
+    type: String
   }
 })
 

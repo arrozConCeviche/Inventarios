@@ -126,6 +126,7 @@ router.get('/:producto/:tipo/:modelo', ensureAuthenticated, (req, res) => {
           }
           return i;
         }
+        console.log(vehiculos)
         res.render('vehiculos',{
           vehiculos: vehiculos,
           stock: objLength(vehiculos),

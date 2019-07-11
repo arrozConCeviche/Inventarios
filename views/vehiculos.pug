@@ -22,13 +22,14 @@ block content
           th ID Vehiculo
           th Color
           th Almacen
-          th Administrador
+          if user=="Administrador"
+            th Administrador
         each vehiculo, i in vehiculos
           tbody
             td 
               a.themed-grid-col(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].modelo+"/"+vehiculo._id)= vehiculo._id
             td= vehiculo.color
             td= vehiculo.almacen
-            if user.rol=="Administrador"
+            if user=="Administrador"
               td 
                 a(href="/inventario/vehiculo/"+vehiculo.modelo[0].tipo+"/"+vehiculo.modelo[0].modelo+"/"+vehiculo._id+"/editar") Editar

@@ -35,7 +35,7 @@ block content
                   td= modeloV.modelo
                   td= cant
                   td= modeloV.pVenta
-                  td= venta.fSalida
+                  td= moment(venta.fSalida, "DDMMYYYY").format('LL')
                   td= pTotal
                   
 

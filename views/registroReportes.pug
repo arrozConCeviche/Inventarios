@@ -1,3 +1,27 @@
 extends layout
 block content
-  
+  table.table
+    thead.thead-dark
+      tr
+        th(scope='col') Mes
+        th(scope='col') Producto
+        th(scope='col') Cantidad
+        th(scope='col') Suma Total de Venta
+    tbody
+      each mes, i in ventaMensual
+        each producto, i in mes.productosVendidos
+          tr
+            th(scope='row')= mes.mes
+            td producto
+            td producto
+            td 2000
+          tr
+            th(scope='row')
+            td Camioneta
+            td producto
+            td 2000
+          tr
+            th(scope='row')
+            td asd
+            td producto
+            td 11

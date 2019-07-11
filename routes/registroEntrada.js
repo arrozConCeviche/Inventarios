@@ -79,6 +79,7 @@ router.post('/nuevo/vehiculo', ensureAuthenticated, (req, res) => {
     }
     console.log(stock)
     Vehiculo.insertMany(stock)
+    req.flash('success', 'Productos registrados correctamente');
     res.redirect('/registroEntrada')
   })
 })

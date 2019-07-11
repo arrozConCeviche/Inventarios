@@ -9,7 +9,7 @@ let ModeloRepuesto = require('../models/modeloRepuesto')
 let User = require('../models/user')
 
 
-//Ingresar a Productos
+//Ingresar a Productos - Modelos
 router.get('/', ensureAuthenticated, (req, res) => {
   if(req.user.rol == "Administrador"){
     ModeloVehiculo.find({}, (err, modelos) => {
@@ -26,6 +26,7 @@ router.get('/', ensureAuthenticated, (req, res) => {
   }
 })
 
+//Nuevo Producto - Modelo
 router.get('/nuevo/:modeloProducto', ensureAuthenticated, (req, res) => {
   if(req.user.rol == "Administrador"){
     if(req.params.modeloProducto.toLowerCase() == 'modelovehiculo'){
@@ -51,35 +52,30 @@ router.get('/nuevo/:modeloProducto', ensureAuthenticated, (req, res) => {
 
 
 //Ingresar Editar Vehiculo
-router.get('/editar/vehiculo', ensureAuthenticated, (req, res) => {
+router.get('/editar/:producto', ensureAuthenticated, (req, res) => {
   if(req.user.rol == "Administrador"){
-    ModeloVehiculo.find({}, (err, modelosV) => {
-      res.render('editarModeloPrincipal', {
-        title: 'Editar Vehiculo',
-        modelosV: modelosV,
-        tipo: 'vehiculo',
-        user: req.user.rol
+    if (req.params.producto.toLowerCase() == 'vehiculo') {
+      ModeloVehiculo.find({}, (err, modelosV) => {
+        res.render('editarModeloPrincipal', {
+          title: 'Editar Vehiculo',
+          modelosV: modelosV,
+          tipo: 'vehiculo',
+          user: req.user.rol
+        })
       })
-    })
-  }
-  else{
-    res.redirect('/inventario')
-  }
-})
+    }else if (req.params.producto.toLowerCase() == 'repuesto') {
+      ModeloRepuesto.find({}, (err, modelosR) => {
+        res.render('editarModeloPrincipal', {
+          title: 'Editar Repuesto',
+          modelosR: modelosR,
+          tipo: 'repuesto',
+          user: req.user.rol
 
-
-//Ingresar Editar Repuesto
-router.get('/editar/repuesto', (req, res) => {
-  if(req.user.rol == "Administrador"){
-    ModeloRepuesto.find({}, (err, modelosR) => {
-      res.render('editarModeloPrincipal', {
-        title: 'Editar Repuesto',
-        modelosR: modelosR,
-        tipo: 'repuesto',
-        user: req.user.rol
-
+        })
       })
-    })
+    }else{
+      res.redirect('/inventario')
+    }
   }
   else{
     res.redirect('/inventario')

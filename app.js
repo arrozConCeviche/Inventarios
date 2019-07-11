@@ -8,6 +8,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
+const moment = require('moment');
 
 mongoose.connect(config.database, { useNewUrlParser: true });
 let db = mongoose.connection;
@@ -27,6 +28,9 @@ db.on('error',function(err){
 //Init App
 const app = express();
 
+//Moment Setup
+
+moment.locale('es');
 
 // BodyParser
 app.use(bodyParser.urlencoded({extended: false}))

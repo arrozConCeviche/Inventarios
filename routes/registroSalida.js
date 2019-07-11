@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const moment = require('moment')
 
+moment.locale('es');
 
 //Models
 let ModeloVehiculo = require('../models/modeloVehiculo')
@@ -21,13 +23,14 @@ router.get('/', ensureAuthenticated, (req, res) => {
           ventas: ventas,
           modelosV: modelosV,
           modelosR: modelosR,
-          user: req.user.rol
-
+          user: req.user.rol,
+          moment: moment
         })
       })
     })
   })
 })
+
 
 
 //Nuevo Registro
@@ -89,15 +92,17 @@ router.post('/nuevo', ensureAuthenticated, (req, res) => {
           let venta = new Venta({
             idRegistro: ultimaVenta.idRegistro+1,
             cuerpoSalida: descrip,
-            fSalida: Date.now()
+            fSalida: moment().format("L")
           })
           venta.save()
+          console.log(moment().format("L"))
+          console.log(venta.fSalida)
         }
         else{
           let venta = new Venta({
             idRegistro: 1,
             cuerpoSalida: descrip,
-            fSalida: Date.now()
+            fSalida: moment().format('L')
           })
           venta.save()
         }

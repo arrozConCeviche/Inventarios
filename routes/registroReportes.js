@@ -30,12 +30,15 @@ router.get('/', ensureAuthenticated, (req, res) => {
           for (var k = 0; k < ventas[j].cuerpoSalida.length; k++) {                   // Iterar en cuerpoSalida - Vehiculo y Repuesto
             for (var l = 0; l < ventas[j].cuerpoSalida[k].length; l++) {              // Iterar en productos vendidos - Venta
               for (var m = 0; m < ventaMensual[i].productosVendidos.length; m++) {    // Iterar en productos vendidos almacenados - Arreglo
+                console.log('fin de iteracion')
                 if (ventas[j].cuerpoSalida[k][l].modelo[0].modelo.toLowerCase() == ventaMensual[i].productosVendidos[m].producto.toLowerCase()) {
                   ventaMensual[i].productosVendidos[m].montoAcumulado = ventaMensual[i].productosVendidos[m].montoAcumulado + ventas[j].cuerpoSalida[k][l].modelo[0].pVenta
                   ventaMensual[i].productosVendidos[m].cantidad++
+                  console.log(ventaMensual)
                   break
                 }
                 ventaMensual[i].productosVendidos.push({producto: ventas[j].cuerpoSalida[k][l].modelo[0].modelo, montoAcumulado: ventas[j].cuerpoSalida[k][l].modelo[0].pVenta, cantidad: 1})
+                console.log(ventaMensual)
               }
             }
           }

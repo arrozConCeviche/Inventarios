@@ -129,7 +129,7 @@ router.post('/nuevo/modeloVehiculo', ensureAuthenticated, (req, res) => {
 
 
 //Guardar nuevo producto -> Repuesto
-router.post('/nuevo/repuesto', ensureAuthenticated, (req, res) => {
+router.post('/nuevo/modeloRepuesto', ensureAuthenticated, (req, res) => {
   const tipo = req.body.tipo;
   const modelo = req.body.modelo;
   const numeroEmpaque = req.body.numeroEmpaque;

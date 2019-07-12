@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 
 //Models
 let ModeloVehiculo = require('../models/modeloVehiculo')
+let Vehiculo = require('../models/vehiculo')
 let ModeloRepuesto = require('../models/modeloRepuesto')
+let Repuesto = require('../models/repuesto')
 let User = require('../models/user')
 
 
